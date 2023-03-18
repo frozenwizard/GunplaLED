@@ -17,11 +17,11 @@ install-micropython:
 	@echo Installing micropython to $(RASPI_MOUNT)
 	cp micropython/* $(RASPI_MOUNT)
 
-.PHONY: build
-build:
+.PHONY: build-test
+build-test:
 	rm -rf target/
 	mkdir target/
-	cp src/main.py target/
+	cp src/test.py target/main.py
 
 .PHONY: deploy
 deploy:
