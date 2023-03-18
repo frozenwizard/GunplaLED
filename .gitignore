@@ -4,3 +4,6 @@
 *.iml
 micropython/
 target/
+
+
+src/config.py

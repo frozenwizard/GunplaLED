@@ -8,6 +8,7 @@ clean:
 setup:
 	mkdir micropython
 	wget -P micropython https://micropython.org/download/rp2-pico-w/rp2-pico-w-latest.uf2
+	cp src/config.py.template src/config.py
 	#install pip3
 	# pip install rshell
 
@@ -22,6 +23,13 @@ build-test:
 	rm -rf target/
 	mkdir target/
 	cp src/test.py target/main.py
+
+.PHONY: build
+build:
+	rm -rf target/
+	mkdir target/
+	cp src/config.py target/
+	cp src/webserver.py target/main.py
 
 .PHONY: deploy
 deploy:
