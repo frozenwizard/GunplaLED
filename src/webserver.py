@@ -39,7 +39,7 @@ else:
     time.sleep(2)
     board_led.off()
     status = wlan.ifconfig()
-    print( 'ip = ' + status[0] )
+    print('ip = ' + status[0])
 
 addr = socket.getaddrinfo('0.0.0.0', 8080)[0][-1]
 
@@ -61,8 +61,8 @@ while True:
         led_on = request.find('/light/on')
         led_off = request.find('/light/off')
         head = request.find('/head')
-        print( 'led on = ' + str(led_on))
-        print( 'led off = ' + str(led_off))
+        print('led on = ' + str(led_on))
+        print('led off = ' + str(led_off))
 
         if led_on == 6:
             print("led on")
