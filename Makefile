@@ -29,8 +29,11 @@ build:
 	rm -rf target/
 	mkdir target/
 	cp src/config.py target/
+	cp src/index.html target/
+	cp src/nu_gundam.py target/
 	cp src/webserver.py target/main.py
 
 .PHONY: deploy
 deploy:
-	~/.local/bin/rshell cp target/* /pyboard/
+	~/.local/bin/rshell rm -r /pyboard/*
+	~/.local/bin/rshell cp -r target/* /pyboard/

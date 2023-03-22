@@ -1,5 +1,5 @@
 webserver = dict(
-    ssid='<replace with your WLAN SSID>',
-    password='<replace with your WLAN password>',
-    hostname='<replace with your desired hostname>'
+    ssid = '<replace with your WLAN SSID>',
+    password = '<replace with your WLAN password>',
+    hostname = '<replace with your desired hostname>'
 )
