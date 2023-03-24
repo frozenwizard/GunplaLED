@@ -1,0 +1,9 @@
+{
+  "leds": [
+    {"name":  "head", "pin": 1, "color":  "green"},
+    {"name":  "beamsaber1", "pin":  3, "color":  "white"},
+    {"name":  "beamsaber2", "pin":  4, "color":  "white"},
+    {"name":  "weapon1", "pin":  5, "color":  "white"},
+    {"name":  "weapon1", "pin":  6, "color":  "white"}
+  ]
+}

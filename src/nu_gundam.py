@@ -10,10 +10,11 @@ class NuGundam(BaseGundam):
     # head_led = Pin(1, Pin.OUT)
     fin_funnel1 = Pin(2, Pin.OUT)
 
-    config_file = "nu_gundam.json"
-
     def __init__(self):
         super().__init__()
+
+    def get_config_file(self) -> str:
+        return "config/nu_gundam.json"
 
     def activation(self, request):
         self.head_led.on()

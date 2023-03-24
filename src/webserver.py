@@ -11,7 +11,7 @@ board_led = Pin("LED", Pin.OUT)
 
 @server.route("/index", methods=["GET"])
 def index(request):
-   return await render_template("index.html")
+   return await render_template("www/index.html")
 
 @server.route("/canary", methods=["GET"])
 def sanity(request):

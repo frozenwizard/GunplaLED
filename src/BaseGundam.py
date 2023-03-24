@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 from phew import server
 import json
 
@@ -5,13 +7,15 @@ from machine import Pin
 
 
 class BaseGundam:
-    config_file = "base_gundam.json"
-
     head_led = Pin("LED", Pin.OUT)
 
     def __init__(self):
-        with open(self.config_file) as fp:
+        with open(self.get_config_file()) as fp:
             self.config: json = json.loads(fp.read())
+
+    @abstractmethod
+    def get_config_file(self)->str:
+        pass
 
     def add_routes(self, server: server):
         server.add_route(f"/led/<led_name>/on", self.led_on, methods=["GET"])
