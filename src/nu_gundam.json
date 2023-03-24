@@ -4,7 +4,6 @@
     {"name":  "fin funnel 1", "pin":  2, "color":  "white"}
   ],
   "lightshow":  [
-    {"name": "Funnel Attack", "method":  "finfire", "path": "finfire"},
-    {"name":  "activation", "method":  "activation"}
+     {"name":  "activation", "path":  "activation", "method":  "activation"}
   ]
 }

@@ -24,19 +24,14 @@ def sanity(request):
     board_led.off()
     return "chirp", 200
 
-@server.route("/led/head3/on", methods=["GET"])
-def head_on(request):
-    return "on", 200
 
-@server.route("/led/head3/on", methods=["GET"])
-def head_off(request):
-    return "off", 200
 @server.catchall()
 def catchall(request):
     return "Not found", 404
 
 def main():
-    connect_to_wifi(config.webserver['ssid'], config.webserver['password'])
+    ipaddress = connect_to_wifi(config.webserver['ssid'], config.webserver['password'])
+    server.logging.info(f"Server started on {ipaddress}")
     board_led.on()
     time.sleep(0.5)
     board_led.off()
