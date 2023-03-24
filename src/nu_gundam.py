@@ -14,14 +14,33 @@ class NuGundam:
 
     def add_routes(self, server: server):
         routes = []
-        for individual_led in self.config['leds']:
-            led_name = individual_led['name']
-            server.add_route(f"/led/{led_name}/on", self.head_on, methods=["GET"])
-            server.add_route(f"/led/{led_name}/off", self.head_off, methods=["GET"])
-    def head_on(self, request):
-        self.head_led.on()
-        return "on", 200
+        server.add_route(f"/led/<led_name>/on", self.head_on, methods=["GET"])
+        server.add_route(f"/led/<led_name>/off", self.head_off, methods=["GET"])
 
-    def head_off(self, request):
-        self.head_led.off()
-        return "off", 200
+
+    def generic_pin(self, pin_num)->Pin:
+        return Pin(pin_num, Pin.OUT)
+
+    def get_pin_from_name(self, led_name: str)->int:
+        for entry in self.config['leds']:
+            if(entry['name']==led_name):
+                return entry['pin']
+        raise Exception(f"Led '{led_name}' not found")
+
+    def head_on(self, request, led_name):
+        try:
+            pin_num = self.get_pin_from_name(led_name)
+            pin = self.generic_pin(pin_num)
+            self.head_led.on()
+            return f"{led_name} on", 200
+        except Exception as e:
+            return e.__str__(), 400
+
+    def head_off(self, request, led_name):
+        try:
+            pin_num = self.get_pin_from_name(led_name)
+            pin = self.generic_pin(pin_num)
+            self.head_led.off()
+            return f"{led_name} off", 200
+        except Exception as e:
+            return e.__str__(), 400
