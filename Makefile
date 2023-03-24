@@ -28,9 +28,11 @@ build-test:
 build:
 	rm -rf target/
 	mkdir target/
+	cp -r src/phew/ target/phew
 	cp src/config.py target/
 	cp src/index.html target/
 	cp src/nu_gundam.py target/
+	cp src/nu_gundam.json target/
 	cp src/webserver.py target/main.py
 
 .PHONY: deploy

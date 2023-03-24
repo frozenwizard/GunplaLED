@@ -16,11 +16,11 @@ def index(request):
 @server.route("/canary", methods=["GET"])
 def sanity(request):
     board_led.on()
-    time.sleep(0.5)
+    time.sleep(0.25)
     board_led.off()
-    time.sleep(0.5)
+    time.sleep(0.25)
     board_led.on()
-    time.sleep(0.5)
+    time.sleep(0.25)
     board_led.off()
     return "chirp", 200
 
@@ -44,7 +44,8 @@ def main():
     board_led.on()
     time.sleep(0.5)
     board_led.off()
-    gundam = NuGundam(server)
+    gundam = NuGundam()
+    gundam.add_routes(server)
     server.run()
 
 if __name__ == "__main__":
