@@ -4,6 +4,7 @@ from machine import Pin
 import time
 from BaseGundam import BaseGundam
 from phew import server
+from phew.server import Response, Request
 
 
 class NuGundam(BaseGundam):
@@ -16,7 +17,10 @@ class NuGundam(BaseGundam):
     def get_config_file(self) -> str:
         return "config/nu_gundam.json"
 
-    def activation(self, request):
+    def activation(self, request: Request) -> Response:
+        """
+        Runs the activation lightshow
+        """
         self.head_led.on()
         time.sleep(.25)
         self.head_led.off()
