@@ -1,7 +1,7 @@
 from machine import Pin
 import time
 
-import config
+import settings
 
 from nu_gundam import NuGundam
 from phew import server, connect_to_wifi
@@ -13,6 +13,7 @@ board_led: Pin = Pin("LED", Pin.OUT)
 
 @server.route("/index", methods=["GET"])
 def index(request: Request) -> Response:
+    server.logging.info("requested index")
     return await render_template("www/index.html")
 
 
@@ -43,9 +44,13 @@ def blink() -> None:
     board_led.off()
 
 def main():
-    ipaddress: str = connect_to_wifi(config.webserver['ssid'], config.webserver['password'])
-    server.logging.info(f"Server started on {ipaddress}")
-    blink()
+    server.logging.info(f"Connect to {settings.webserver['ssid']} with {settings.webserver['password']}")
+    ipaddress: str = connect_to_wifi(settings.webserver['ssid'], settings.webserver['password'])
+    if ipaddress:
+        server.logging.info(f"Server started on {ipaddress}")
+        blink()
+    else:
+        server.logging.error("Server failed to connect")
     gundam = NuGundam()
     gundam.add_routes(server)
     server.run()

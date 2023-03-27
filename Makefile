@@ -8,7 +8,7 @@ clean:
 setup:
 	mkdir micropython
 	wget -P micropython https://micropython.org/download/rp2-pico-w/rp2-pico-w-latest.uf2
-	cp src/config.py.template src/config.py
+	cp src/config.py.template src/settings.py
 	#install pip3
 	# pip install rshell
 
@@ -30,7 +30,7 @@ build:
 	mkdir target/
 	mkdir target/config
 	cp -r src/phew/ target/phew
-	cp src/config.py target/
+	cp src/settings.py target/
 	cp -r src/www/ target/
 	cp src/nu_gundam.py target/
 	cp src/BaseGundam.py target/

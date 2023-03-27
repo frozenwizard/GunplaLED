@@ -1,4 +1,3 @@
-from abc import abstractmethod
 
 from phew import server
 import json
@@ -15,7 +14,6 @@ class BaseGundam:
         with open(self.get_config_file()) as fp:
             self.config: json = json.loads(fp.read())
 
-    @abstractmethod
     def get_config_file(self)->str:
         pass
 

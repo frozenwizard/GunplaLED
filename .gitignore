@@ -6,5 +6,5 @@ micropython/
 target/
 
 
-src/config.py
+src/settings.py
 src/phew
