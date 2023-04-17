@@ -1,4 +1,5 @@
 
+from LED import LED
 from phew import server
 import json
 
@@ -20,8 +21,8 @@ class BaseGundam:
     def add_routes(self, server: server):
         server.add_route(f"/led/<led_name>/on", self.led_on, methods=["GET"])
         server.add_route(f"/led/<led_name>/off", self.led_off, methods=["GET"])
-        server.add_route("/led/all/on", self.all_on, methods=["GET"])
-        server.add_route(f"/led/all/off", self.all_off, methods=["GET"])
+        server.add_route("/all/on", self.all_on, methods=["GET"])
+        server.add_route("/all/off", self.all_off, methods=["GET"])
         for lightshow in self.config['lightshow']:
             server.add_route(f"/lightshow/{lightshow['path']}", getattr(self, lightshow['method']), methods=["GET"])
 
@@ -32,7 +33,7 @@ class BaseGundam:
         try:
             pin_num = self.get_pin_from_name(led_name)
             led = self.generic_pin(pin_num)
-            self.head_led.on()
+            led.on()
             return f"{led_name} on", 200
         except Exception as e:
             return str(e), 500
@@ -44,7 +45,7 @@ class BaseGundam:
         try:
             pin_num = self.get_pin_from_name(led_name)
             led = self.generic_pin(pin_num)
-            self.head_led.off()
+            led.off()
             return f"{led_name} off", 200
         except Exception as e:
             return str(e), 500
@@ -75,6 +76,9 @@ class BaseGundam:
         except Exception as e:
             return str(e), 500
 
+
+    def get_led_from_name(self, led_name:str)->LED:
+        return LED(self.get_pin_from_name(led_name), led_name)
 
     def generic_pin(self, pin_num:int) -> Pin:
         """

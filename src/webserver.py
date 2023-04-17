@@ -1,6 +1,7 @@
 from machine import Pin
 import time
 
+import BaseGundam
 import settings
 
 from nu_gundam import NuGundam
@@ -10,11 +11,11 @@ from phew.template import render_template
 
 board_led: Pin = Pin("LED", Pin.OUT)
 
+gundam = NuGundam()
 
 @server.route("/index", methods=["GET"])
 def index(request: Request) -> Response:
-    server.logging.info("requested index")
-    return await render_template("www/index.html")
+    return await render_template("www/index.html", all_buttons=gundam.config['leds'])
 
 
 @server.route("/canary", methods=["GET"])
@@ -42,6 +43,7 @@ def blink() -> None:
     board_led.on()
     time.sleep(0.5)
     board_led.off()
+
 
 def main():
     server.logging.info(f"Connect to {settings.webserver['ssid']} with {settings.webserver['password']}")

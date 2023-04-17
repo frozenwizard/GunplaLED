@@ -4,24 +4,28 @@
 <body>
 
 <p>Control individual leds</p>
-<form action="./head/on">
-    <input type="submit" value="Turn on Head "/>
-</form>
-<form action="./head/off">
-    <input type="submit" value="Turn off Head "/>
-</form>
+{{
+"".join(["""<li>
+    <form action="./led/{0}/on">
+        <input type="submit" value="Turn {0} on">
+    </form>
+    <form action="./led/{0}/off">
+        <input type="submit" value="Turn {0} off">
+    </form>
+</li>\n""".format(itm["name"]) for itm in all_buttons])
+}}
 
 <p>Light Show</p>
-<form action="./lightshow/blink">
-    <input type="submit" value="Activate Nu Gundam"/>
+<form action="./lightshow/activation">
+    <input type="submit" value="Activate Nu Gundam">
 </form>
 
-<p>Sanity</p>
+    <p>Sanity</p>
 <form action="./all/on">
-    <input type="submit" value="Turn on All LEDs "/>
+    <input type="submit" value="Turn on All LEDs ">
 </form>
 <form action="./all/off">
-    <input type="submit" value="Turn off All LEDs "/>
+    <input type="submit" value="Turn off All LEDs ">
 </form>
 
 </body>

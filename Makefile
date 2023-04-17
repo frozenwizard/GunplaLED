@@ -18,6 +18,9 @@ install-micropython:
 	@echo Installing micropython to $(RASPI_MOUNT)
 	cp micropython/* $(RASPI_MOUNT)
 
+install-micropython-osx:
+	cp micropython/* /Volumes/RPI-RP2/
+
 .PHONY: build-test
 build-test:
 	rm -rf target/
@@ -29,15 +32,17 @@ build:
 	rm -rf target/
 	mkdir target/
 	mkdir target/config
+	mkdir target/www
 	cp -r src/phew/ target/phew
 	cp src/settings.py target/
-	cp -r src/www/ target/
+	cp -r src/www/ target/www/
 	cp src/nu_gundam.py target/
+	cp src/LED.py	target/
 	cp src/BaseGundam.py target/
 	cp src/config/nu_gundam.json target/config/nu_gundam.json
 	cp src/webserver.py target/main.py
 
 .PHONY: deploy
 deploy:
-	~/.local/bin/rshell rm -r /pyboard/*
-	~/.local/bin/rshell cp -r target/* /pyboard/
+	rshell rm -r /pyboard/*
+	rshell cp -r target/* /pyboard/

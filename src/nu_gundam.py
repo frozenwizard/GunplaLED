@@ -8,7 +8,7 @@ from phew.server import Response, Request
 
 
 class NuGundam(BaseGundam):
-    # head_led = Pin(1, Pin.OUT)
+    head_led = Pin(1, Pin.OUT)
     fin_funnel1 = Pin(2, Pin.OUT)
 
     def __init__(self):
