@@ -6,5 +6,9 @@ micropython/
 target/
 
 
+#Source
 src/settings.py
 src/phew
+
+#OS garbase
+.DS_STORE
