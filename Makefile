@@ -1,34 +1,36 @@
+.DEFAULT_GOAL=help
 
 .PHONY: clean
-clean:
+clean:  ##Nukes the target and micropython dirs
 	rm -rf target/
 	rm -rf micropython/
 
 .PHONY: setup
-setup:
+setup:  ## Downloads and setups required dependencies
 	mkdir micropython
 	wget -P micropython https://micropython.org/download/rp2-pico-w/rp2-pico-w-latest.uf2
 	cp src/config.py.template src/settings.py
 	#install pip3
 	# pip install rshell
 
-.PHONY: install-micropython
-install-micropython:
+.PHONY: install-micropython-ubuntu
+install-micropython-ubuntu:  ## Installs micropython to pi board on ubuntu
 	$(eval RASPI_MOUNT=$(shell findmnt -t vfat -o TARGET | grep RPI))
 	@echo Installing micropython to $(RASPI_MOUNT)
 	cp micropython/* $(RASPI_MOUNT)
 
-install-micropython-osx:
+.PHONY: install-micropython-osx
+install-micropython-osx:  ## Installs micropython to pi board on Mac OSX
 	cp micropython/* /Volumes/RPI-RP2/
 
 .PHONY: build-test
-build-test:
+build-test:  ## Builds a test script to sanity check deployments
 	rm -rf target/
 	mkdir target/
 	cp src/test.py target/main.py
 
 .PHONY: build
-build:
+build:  ## Builds the server and Gunpla
 	rm -rf target/
 	mkdir target/
 	mkdir target/config
@@ -43,6 +45,9 @@ build:
 	cp src/webserver.py target/main.py
 
 .PHONY: deploy
-deploy:
+deploy:  ## Deploys the built artifacts to the pi board
 	rshell rm -r /pyboard/*
 	rshell cp -r target/* /pyboard/
+
+help:  ## Show this help.
+	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
