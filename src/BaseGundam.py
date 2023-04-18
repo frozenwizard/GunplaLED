@@ -6,6 +6,7 @@ import json
 from machine import Pin
 
 from phew.server import Response, Request
+from src.DisabledLED import DisabledLED
 
 
 class BaseGundam:
@@ -31,8 +32,7 @@ class BaseGundam:
         Turns a Single LED on by name
         """
         try:
-            pin_num = self.get_pin_from_name(led_name)
-            led = self.generic_pin(pin_num)
+            led = self.get_led_from_name(led_name)
             led.on()
             return f"{led_name} on", 200
         except Exception as e:
@@ -43,8 +43,7 @@ class BaseGundam:
         Turns a single LED off by name
         """
         try:
-            pin_num = self.get_pin_from_name(led_name)
-            led = self.generic_pin(pin_num)
+            led = self.get_led_from_name(led_name)
             led.off()
             return f"{led_name} off", 200
         except Exception as e:
@@ -55,9 +54,9 @@ class BaseGundam:
         Turns all configured LED's on.
         """
         try:
-            for led in self.config['leds']:
-                pin_num = led['pin']
-                led = self.generic_pin(pin_num)
+            for led_entry in self.config['leds']:
+                led_name = led_entry['pin']
+                led = self.get_led_from_name(led_name)
                 led.on()
             return "All on", 200
         except Exception as e:
@@ -68,9 +67,9 @@ class BaseGundam:
         Turns all configured LED's off
         """
         try:
-            for led in self.config['leds']:
-                pin_num = led['pin']
-                led = self.generic_pin(pin_num)
+            for led_entry in self.config['leds']:
+                led_name = led_entry['pin']
+                led = self.get_led_from_name(led_name)
                 led.off()
             return "All off", 200
         except Exception as e:
@@ -78,19 +77,14 @@ class BaseGundam:
 
 
     def get_led_from_name(self, led_name:str)->LED:
-        return LED(self.get_pin_from_name(led_name), led_name)
+        entry = self.get_entry_from_name(led_name)
+        if entry['disabled']:
+            return DisabledLED()
+        else:
+            return LED(entry['pin'], led_name)
 
-    def generic_pin(self, pin_num:int) -> Pin:
-        """
-        Given a pin number, returns the Pin for it
-        """
-        return Pin(pin_num, Pin.OUT)
-
-    def get_pin_from_name(self, led_name: str) -> int:
-        """
-        Given a led_name, returns the pin number associated with it
-        """
+    def get_entry_from_name(self, led_name: str) -> json:
         for entry in self.config['leds']:
             if entry['name'] == led_name:
-                return entry['pin']
-        raise Exception(f"Led '{led_name}' not found")
+                return entry
+        raise Exception(f"Entry '{led_name}' not found")

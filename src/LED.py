@@ -8,7 +8,7 @@ class LED:
         self.pin: Pin = Pin(pin_number, Pin.OUT)
         self.name = name
 
-    def on(self):
+    def on(self) -> None:
         self.pin.on()
 
     def off(self):

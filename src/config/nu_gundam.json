@@ -1,7 +1,8 @@
 {
   "leds": [
     {"name":  "head", "pin": 1, "color":  "green"},
-    {"name":  "fin_funnel_1", "pin":  2, "color":  "white"}
+    {"name":  "fin_funnel_1", "pin":  2, "color":  "white"},
+    {"name":  "fakething", "pin":  45, "color":  "white", "disabled":  true}
   ],
   "lightshow":  [
      {"name":  "Activate Gundam", "path":  "activation", "method":  "activation"}
