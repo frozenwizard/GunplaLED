@@ -13,6 +13,7 @@ board_led: Pin = Pin("LED", Pin.OUT)
 
 gundam = NuGundam()
 
+
 @server.route("/index", methods=["GET"])
 def index(request: Request) -> Response:
     return await render_template("www/index.html", all_buttons=gundam.config['leds'])

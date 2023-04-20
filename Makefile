@@ -49,5 +49,14 @@ deploy:  ## Deploys the built artifacts to the pi board
 	rshell rm -r /pyboard/*
 	rshell cp -r target/* /pyboard/
 
+#python tooling
+.PHONY: format
+format:  ## Format the Python code
+	autopep8 -i -r src/
+
+.PHONY: lint
+lint: ## Lints the python code
+	pylint src/
+
 help:  ## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'

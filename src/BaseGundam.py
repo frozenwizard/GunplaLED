@@ -16,7 +16,7 @@ class BaseGundam:
         with open(self.get_config_file()) as fp:
             self.config: json = json.loads(fp.read())
 
-    def get_config_file(self)->str:
+    def get_config_file(self) -> str:
         pass
 
     def add_routes(self, server: server):
@@ -49,7 +49,7 @@ class BaseGundam:
         except Exception as e:
             return str(e), 500
 
-    def all_on(self, request: Request)->Response:
+    def all_on(self, request: Request) -> Response:
         """
         Turns all configured LED's on.
         """
@@ -62,7 +62,7 @@ class BaseGundam:
         except Exception as e:
             return str(e), 500
 
-    def all_off(self, request:Request) -> Response:
+    def all_off(self, request: Request) -> Response:
         """
         Turns all configured LED's off
         """
@@ -75,8 +75,7 @@ class BaseGundam:
         except Exception as e:
             return str(e), 500
 
-
-    def get_led_from_name(self, led_name:str)->LED:
+    def get_led_from_name(self, led_name: str) -> LED:
         entry = self.get_entry_from_name(led_name)
         if entry['disabled']:
             return DisabledLED()

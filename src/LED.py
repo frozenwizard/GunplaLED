@@ -20,7 +20,7 @@ class LED:
     def pin(self) -> Pin:
         return self.pin()
 
-    def brighten(self, start_percent:int =0, end_percent:int =100, speed: int = 1)-> None:
+    def brighten(self, start_percent: int = 0, end_percent: int = 100, speed: int = 1) -> None:
         """
         Starting from start_pct goes to end_pct over the course of speed
         :param intensity:
