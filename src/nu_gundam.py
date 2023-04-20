@@ -1,31 +1,30 @@
-import json
-
-from machine import Pin
 import time
 from BaseGundam import BaseGundam
-from phew import server
 from phew.server import Response, Request
 
 
 class NuGundam(BaseGundam):
-    head_led = Pin(1, Pin.OUT)
-    fin_funnel1 = Pin(2, Pin.OUT)
-
-    def __init__(self):
-        super().__init__()
+    """
+    RX-93 Nu Gundam(https://gundam.fandom.com/wiki/RX-93_ν_Gundam)
+    """
 
     def get_config_file(self) -> str:
+        """
+        :return: The Nu Gundam config file
+        """
         return "config/nu_gundam.json"
 
     def activation(self, request: Request) -> Response:
         """
         Runs the activation lightshow
+        this is just a sample test
         """
-        self.head_led.on()
+        head_led = self._get_led_from_name("head")
+        head_led.on()
         time.sleep(.25)
-        self.head_led.off()
+        head_led.off()
         time.sleep(.25)
-        self.head_led.on()
+        head_led.on()
         time.sleep(.25)
-        self.head_led.off()
+        head_led.off()
         return "finished", 200

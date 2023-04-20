@@ -6,8 +6,8 @@ class GenericGundam(BaseGundam):
     Comes with head, beam saber and 2 weapon leds to be activated by default.
     """
 
-    def __init__(self):
-        super().__init__()
-
     def get_config_file(self) -> str:
+        """
+        :return: Generic Gundam's config file
+        """
         return "config/generic_gundam.json"
