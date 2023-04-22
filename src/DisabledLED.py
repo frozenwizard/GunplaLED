@@ -1,4 +1,4 @@
-from src.LED import LED
+from LED import LED
 
 
 class DisabledLED(LED):

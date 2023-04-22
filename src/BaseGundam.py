@@ -6,7 +6,7 @@ import json
 from machine import Pin
 
 from phew.server import Response, Request
-from src.DisabledLED import DisabledLED
+from DisabledLED import DisabledLED
 
 
 class BaseGundam:
