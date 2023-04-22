@@ -1,4 +1,4 @@
-from LED import LED
+from pi.LED import LED
 
 
 class DisabledLED(LED):

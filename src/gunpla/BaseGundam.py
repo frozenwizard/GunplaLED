@@ -1,12 +1,12 @@
 
-from LED import LED
+from pi.LED import LED
 from phew import server
 import json
 
 from machine import Pin
 
 from phew.server import Response, Request
-from DisabledLED import DisabledLED
+from pi.DisabledLED import DisabledLED
 
 
 class BaseGundam:

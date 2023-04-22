@@ -1,10 +1,9 @@
 from machine import Pin
 import time
 
-import BaseGundam
 import settings
 
-from nu_gundam import NuGundam
+from gunpla.nu_gundam import NuGundam
 from phew import server, connect_to_wifi
 from phew.server import Request, Response
 from phew.template import render_template

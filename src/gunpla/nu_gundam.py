@@ -1,5 +1,5 @@
 import time
-from BaseGundam import BaseGundam
+from gunpla.BaseGundam import BaseGundam
 from phew.server import Response, Request
 
 
