@@ -39,6 +39,7 @@ class BaseGundam:
         Turns a Single LED on by name
         """
         try:
+            print(f"turning on {led_name}")
             led = self._get_led_from_name(led_name)
             led.on()
             return f"{led_name} on", 200
@@ -90,7 +91,8 @@ class BaseGundam:
         :return:
         """
         entry = self.__get_entry_from_name(led_name)
-        if entry['disabled']:
+        print(entry)
+        if 'disabled' in entry and entry['disabled']:
             return DisabledLED()
         return LED(entry['pin'], led_name)
 
