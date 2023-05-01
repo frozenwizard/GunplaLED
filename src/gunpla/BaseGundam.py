@@ -42,9 +42,9 @@ class BaseGundam:
             print(f"turning on {led_name}")
             led = self._get_led_from_name(led_name)
             led.on()
-            return f"{led_name} on", 200
+            return Response(f"{led_name} on", 200)
         except Exception as ex:
-            return str(ex), 500
+            return Response(str(ex), 500)
 
     def led_off(self, request: Request, led_name: str) -> Response:
         """
@@ -53,9 +53,9 @@ class BaseGundam:
         try:
             led = self._get_led_from_name(led_name)
             led.off()
-            return f"{led_name} off", 200
+            return Response(f"{led_name} off", 200)
         except Exception as ex:
-            return str(ex), 500
+            return Response(str(ex), 500)
 
     def all_on(self, request: Request) -> Response:
         """
@@ -66,9 +66,9 @@ class BaseGundam:
                 led_name = led_entry['pin']
                 led = self._get_led_from_name(led_name)
                 led.on()
-            return "All on", 200
+            return Response("All on", 200)
         except Exception as e:
-            return str(e), 500
+            return Response(str(e), 500)
 
     def all_off(self, request: Request) -> Response:
         """
@@ -79,9 +79,9 @@ class BaseGundam:
                 led_name = led_entry['pin']
                 led = self._get_led_from_name(led_name)
                 led.off()
-            return "All off", 200
+            return Response("All off", 200)
         except Exception as e:
-            return str(e), 500
+            return Response(str(e), 500)
 
     def _get_led_from_name(self, led_name: str) -> LED:
         """

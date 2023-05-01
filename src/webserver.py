@@ -27,12 +27,12 @@ def sanity(request: Request) -> Response:
     board_led.on()
     time.sleep(0.25)
     board_led.off()
-    return "chirp", 200
+    return Response("chirp", 200)
 
 
 @server.catchall()
 def catchall(request: Request):
-    return "Not found", 404
+    return Response("Not found", 404)
 
 
 def blink() -> None:

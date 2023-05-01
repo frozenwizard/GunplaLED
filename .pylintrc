@@ -1,2 +1,6 @@
+[MASTER]
+disable=
+    C0114, W0719
+
 [FORMAT]
 max-line-length=140

@@ -27,4 +27,4 @@ class NuGundam(BaseGundam):
         head_led.on()
         time.sleep(.25)
         head_led.off()
-        return "finished", 200
+        return Response("finished", 200)
