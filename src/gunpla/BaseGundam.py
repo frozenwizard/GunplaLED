@@ -38,11 +38,11 @@ class BaseGundam:
         """
         Turns a Single LED on by name
         """
+        server.logging.info(f"turning on {led_name}")
         try:
-            print(f"turning on {led_name}")
             led = self._get_led_from_name(led_name)
             led.on()
-            return Response(f"{led_name} on", 200)
+            return Response(f"{led_name}: on", 200)
         except Exception as ex:
             return Response(str(ex), 500)
 
@@ -50,10 +50,11 @@ class BaseGundam:
         """
         Turns a single LED off by name
         """
+        server.logging.info(f"turning off {led_name}")
         try:
             led = self._get_led_from_name(led_name)
             led.off()
-            return Response(f"{led_name} off", 200)
+            return Response(f"{led_name}: off", 200)
         except Exception as ex:
             return Response(str(ex), 500)
 
@@ -61,27 +62,39 @@ class BaseGundam:
         """
         Turns all configured LED's on.
         """
+        server.logging.info("turning on all leds")
         try:
+            leds: str = ""
             for led_entry in self.config['leds']:
-                led_name = led_entry['pin']
+                led_name = led_entry['name']
                 led = self._get_led_from_name(led_name)
                 led.on()
-            return Response("All on", 200)
-        except Exception as e:
-            return Response(str(e), 500)
+                if isinstance(led, DisabledLED):
+                    leds += f"{led_name}: disabled\n"
+                else:
+                    leds += f"{led_name}: on\n"
+            return Response(f"<html>All on\n {leds} </html>", 200)
+        except Exception as ex:
+            return Response(str(ex), 500)
 
     def all_off(self, request: Request) -> Response:
         """
         Turns all configured LED's off
         """
+        server.logging.info("turning off all leds")
         try:
+            leds: str = ""
             for led_entry in self.config['leds']:
-                led_name = led_entry['pin']
+                led_name = led_entry['name']
                 led = self._get_led_from_name(led_name)
                 led.off()
-            return Response("All off", 200)
-        except Exception as e:
-            return Response(str(e), 500)
+                if isinstance(led, DisabledLED):
+                    leds += f"{led_name}: disabled\n"
+                else:
+                    leds += f"{led_name}: off\n"
+            return Response("All off\n" + leds, 200)
+        except Exception as ex:
+            return Response(str(ex), 500)
 
     def _get_led_from_name(self, led_name: str) -> LED:
         """
@@ -91,9 +104,9 @@ class BaseGundam:
         :return:
         """
         entry = self.__get_entry_from_name(led_name)
-        print(entry)
         if 'disabled' in entry and entry['disabled']:
-            return DisabledLED()
+            server.logging.debug(f"{led_name} is disabled")
+            return DisabledLED(led_name)
         return LED(entry['pin'], led_name)
 
     def __get_entry_from_name(self, led_name: str) -> json:

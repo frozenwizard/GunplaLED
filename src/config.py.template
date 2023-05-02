@@ -1,5 +1,7 @@
-webserver = dict(
-    ssid = '<replace with your WLAN SSID>',
-    password = '<replace with your WLAN password>',
-    hostname = '<replace with your desired hostname>'
-)
+from gunpla.GenericGundam import GenericGundam
+webserver = {
+    "ssid": '<replace with your WLAN SSID>',
+    "password": '<replace with your WLAN password>',
+    "hostname": 'gunpla.local' #replace with a desired hostname,
+    "model": GenericGundam() #The gunpla you have
+}

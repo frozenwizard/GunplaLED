@@ -1,5 +1,6 @@
 from machine import Pin
 import time
+import network
 
 import settings
 
@@ -15,6 +16,11 @@ gundam = NuGundam()
 
 @server.route("/index", methods=["GET"])
 def index(request: Request) -> Response:
+    return await render_template("www/index.html", all_buttons=gundam.config['leds'])
+
+
+@server.route("/", methods=["GET"])
+def root(request: Request) -> Response:
     return await render_template("www/index.html", all_buttons=gundam.config['leds'])
 
 
@@ -46,6 +52,8 @@ def blink() -> None:
 
 
 def main():
+    network.hostname(settings.webserver['hostname'])
+    server.logging.info(f"Set hostname to {network.hostname()}")
     server.logging.info(f"Connect to {settings.webserver['ssid']} with {settings.webserver['password']}")
     ipaddress: str = connect_to_wifi(settings.webserver['ssid'], settings.webserver['password'])
     if ipaddress:
@@ -53,7 +61,7 @@ def main():
         blink()
     else:
         server.logging.error("Server failed to connect")
-    gundam = NuGundam()
+    gundam = settings.webserver['model']
     gundam.add_routes(server)
     server.run()
 

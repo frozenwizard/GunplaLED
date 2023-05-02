@@ -8,7 +8,7 @@ clean:  ##Nukes the target and micropython dirs
 .PHONY: setup
 setup:  ## Downloads and setups required dependencies
 	mkdir micropython
-	wget -P micropython https://micropython.org/download/rp2-pico-w/rp2-pico-w-latest.uf2
+	wget -P micropython https://micropython.org/resources/firmware/rp2-pico-w-20230426-v1.20.0.uf2
 	cp src/config.py.template src/settings.py
 	#install pip3
 	# pip install rshell

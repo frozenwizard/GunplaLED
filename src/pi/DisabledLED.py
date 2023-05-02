@@ -2,6 +2,16 @@ from pi.LED import LED
 
 
 class DisabledLED(LED):
+
+    def __init__(self, led_name: str):
+        self.led_name = led_name
+
+    def name(self) -> str:
+        return self.led_name
+
+    def pin(self):
+        return None
+
     def on(self):
         pass
 
