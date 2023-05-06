@@ -4,14 +4,14 @@ import network
 
 import settings
 
-from gunpla.nu_gundam import NuGundam
+from gunpla.GenericGundam import GenericGundam
 from phew import server, connect_to_wifi
 from phew.server import Request, Response
 from phew.template import render_template
 
 board_led: Pin = Pin("LED", Pin.OUT)
 
-gundam = NuGundam()
+gundam = GenericGundam()
 
 
 @server.route("/index", methods=["GET"])
@@ -21,11 +21,14 @@ def index(request: Request) -> Response:
 
 @server.route("/", methods=["GET"])
 def root(request: Request) -> Response:
-    return await render_template("www/index.html", all_buttons=gundam.config['leds'])
+    return index(request)
 
 
 @server.route("/canary", methods=["GET"])
 def sanity(request: Request) -> Response:
+    """
+    Sanity check to make sure webserver is running.
+    """
     board_led.on()
     time.sleep(0.25)
     board_led.off()
@@ -42,6 +45,9 @@ def catchall(request: Request):
 
 
 def blink() -> None:
+    """
+    Blinks the onboard LED twice
+    """
     board_led.on()
     time.sleep(0.5)
     board_led.off()

@@ -1,6 +1,6 @@
 {
   "leds": [
-    {"name":  "head", "pin": 0, "color":  "green"},
+    {"name":  "head", "pin": 15, "color":  "green"},
     {"name":  "fin_funnel_1", "pin":  1, "color":  "white", "disabled":  false},
     {"name":  "fin_funnel_2", "pin":  2, "color":  "white"},
     {"name":  "fakething", "pin":  45, "color":  "white", "disabled":  true}

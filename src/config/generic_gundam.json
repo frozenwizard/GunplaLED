@@ -1,9 +1,14 @@
 {
   "leds": [
-    {"name":  "head", "pin": 1, "color":  "green"},
-    {"name":  "beamsaber1", "pin":  3, "color":  "white"},
-    {"name":  "beamsaber2", "pin":  4, "color":  "white"},
-    {"name":  "weapon1", "pin":  5, "color":  "white"},
-    {"name":  "weapon1", "pin":  6, "color":  "white"}
+    {"name":  "head", "pin": 0, "color":  "green"},
+    {"name":  "head_camera", "pin": 1, "color":  "green"},
+    {"name":  "chest", "pin": 2, "color":  "green"},
+    {"name":  "beamsaber1", "pin":  3, "color":  "red"},
+    {"name":  "beamsaber2", "pin":  4, "color":  "red"},
+    {"name":  "weapon1", "pin":  5, "color":  "red"},
+    {"name":  "weapon1_camera", "pin":  6, "color":  "green"},
+    {"name":  "weapon2", "pin":  7, "color":  "red"},
+    {"name":  "weapon2_camera", "pin":  8, "color":  "green"},
+    {"name":  "vernier", "pin": 10, "color":  "blue"}
   ]
 }
