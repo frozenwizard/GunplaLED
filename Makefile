@@ -44,7 +44,7 @@ build:  ## Builds the server and Gunpla
 	cp -r src/ target/
 	#cp src/config/nu_gundam.json target/config/nu_gundam.json
 	#cp src/webserver.py target/main.py
-	mv target/webserver.py target/main.py
+	#mv target/webserver.py target/main.py
 
 .PHONY: deploy
 deploy:  ## Deploys the built artifacts to the pi board

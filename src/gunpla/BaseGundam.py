@@ -1,12 +1,12 @@
 
-from pi.LED import LED
-from phew import server
+from src.pi.LED import LED
+from src.phew import server
 import json
 
 from machine import Pin
 
-from phew.server import Response, Request
-from pi.DisabledLED import DisabledLED
+from src.phew.server import Response, Request
+from src.pi.DisabledLED import DisabledLED
 
 
 class BaseGundam:
@@ -38,7 +38,7 @@ class BaseGundam:
         """
         Turns a Single LED on by name
         """
-        server.logging.info(f"turning on {led_name}")
+        src.phew.server.logging.info(f"turning on {led_name}")
         try:
             led = self._get_led_from_name(led_name)
             led.on()
@@ -50,7 +50,7 @@ class BaseGundam:
         """
         Turns a single LED off by name
         """
-        server.logging.info(f"turning off {led_name}")
+        src.phew.server.logging.info(f"turning off {led_name}")
         try:
             led = self._get_led_from_name(led_name)
             led.off()
@@ -62,7 +62,7 @@ class BaseGundam:
         """
         Turns all configured LED's on.
         """
-        server.logging.info("turning on all leds")
+        src.phew.server.logging.info("turning on all leds")
         try:
             leds: str = ""
             for led_entry in self.config['leds']:
@@ -81,7 +81,7 @@ class BaseGundam:
         """
         Turns all configured LED's off
         """
-        server.logging.info("turning off all leds")
+        src.phew.server.logging.info("turning off all leds")
         try:
             leds: str = ""
             for led_entry in self.config['leds']:
@@ -105,7 +105,7 @@ class BaseGundam:
         """
         entry = self.__get_entry_from_name(led_name)
         if 'disabled' in entry and entry['disabled']:
-            server.logging.debug(f"{led_name} is disabled")
+            src.phew.server.logging.debug(f"{led_name} is disabled")
             return DisabledLED(led_name)
         return LED(entry['pin'], led_name)
 

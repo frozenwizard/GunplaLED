@@ -1,6 +1,6 @@
 import time
 from gunpla.BaseGundam import BaseGundam
-from phew.server import Response, Request
+from src.phew.server import Response, Request
 
 
 class NuGundam(BaseGundam):
