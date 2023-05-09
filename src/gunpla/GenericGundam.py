@@ -10,4 +10,4 @@ class GenericGundam(BaseGundam):
         """
         :return: Generic Gundam's config file
         """
-        return "config/generic_gundam.json"
+        return "src/config/generic_gundam.json"

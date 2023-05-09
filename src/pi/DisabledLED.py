@@ -1,7 +1,7 @@
 from src.pi.LED import LED
 
 
-class disabled_led(LED):
+class DisabledLED(LED):
 
     def __init__(self, led_name: str):
         self.led_name = led_name

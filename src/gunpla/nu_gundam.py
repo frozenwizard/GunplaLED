@@ -1,5 +1,5 @@
 import time
-from gunpla.BaseGundam import BaseGundam
+from src.gunpla.BaseGundam import BaseGundam
 from src.phew.server import Response, Request
 
 
@@ -12,7 +12,7 @@ class NuGundam(BaseGundam):
         """
         :return: The Nu Gundam config file
         """
-        return "config/nu_gundam.json"
+        return "src/config/nu_gundam.json"
 
     def activation(self, request: Request) -> Response:
         """

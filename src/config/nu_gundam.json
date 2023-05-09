@@ -1,4 +1,5 @@
 {
+  "name": "RX-93 Nu Gundam",
   "leds": [
     {"name":  "head", "pin": 15, "color":  "green"},
     {"name":  "fin_funnel_1", "pin":  1, "color":  "white", "disabled":  false},

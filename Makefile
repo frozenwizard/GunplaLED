@@ -33,18 +33,8 @@ build-test:  ## Builds a test script to sanity check deployments
 build:  ## Builds the server and Gunpla
 	rm -rf target/
 	mkdir target/
-#	mkdir target/config
-#	mkdir target/www
-#	cp -r src/phew/ target/phew
-#	cp src/settings.py target/
-#	cp -r src/www/ target/www/
-#	cp src/nu_gundam.py target/
-#	cp src/LED.py	target/
-#	cp src/BaseGundam.py target/
-	cp -r src/ target/
-	#cp src/config/nu_gundam.json target/config/nu_gundam.json
-	#cp src/webserver.py target/main.py
-	#mv target/webserver.py target/main.py
+	cp main.py target/
+	cp -r src/ target/src/
 
 .PHONY: deploy
 deploy:  ## Deploys the built artifacts to the pi board
@@ -59,7 +49,6 @@ format:  ## Format the Python code
 .PHONY: lint
 lint: ## Lints the python code
 	pylint src/
-	
 
 help:  ## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'

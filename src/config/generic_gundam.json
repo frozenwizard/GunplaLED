@@ -1,4 +1,5 @@
 {
+  "name": "gunpla",
   "leds": [
     {"name":  "head", "pin": 0, "color":  "green"},
     {"name":  "head_camera", "pin": 1, "color":  "green"},
