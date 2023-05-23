@@ -1,17 +1,15 @@
 import sys
-from machine import Pin
-import time
 import network
 
 from src import settings
-from src.phew.server import logging
 from src.gunpla.GenericGundam import GenericGundam
-from src.phew import server, connect_to_wifi
-from src.phew.server import Request, Response
-from src.phew.template import render_template
 from src.pi.LED import LED
 from src.pi.board_led import BoardLED
 from src.pi.led_effect import LEDEffects
+
+from src.phew import server, connect_to_wifi
+from src.phew.server import logging, Request, Response
+from src.phew.template import render_template
 
 
 class WebServer:

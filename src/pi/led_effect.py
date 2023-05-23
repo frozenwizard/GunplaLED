@@ -1,6 +1,8 @@
-from src.pi.LED import LED
 import time
+
 from machine import PWM
+
+from src.pi import LED
 
 
 class LEDEffects:
@@ -8,6 +10,7 @@ class LEDEffects:
     A collection of effects a LED can do.  Things such as pulsate, breath, flash, etc.
     """
 
+    @staticmethod
     def blink(led: LED) -> None:
         """
         Blinks the onboard LED twice
