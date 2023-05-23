@@ -2,6 +2,9 @@ from src.pi.LED import LED
 
 
 class DisabledLED(LED):
+    """
+    An LED that is disabled in the configuration.  When attempted to manipulate by turning it on or off, it does nothing.
+    """
 
     def __init__(self, led_name: str):
         self.led_name = led_name

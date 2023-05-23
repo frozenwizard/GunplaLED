@@ -1,12 +1,64 @@
 {
   "name": "RX-93 Nu Gundam",
   "leds": [
-    {"name":  "head", "pin": 15, "color":  "green"},
-    {"name":  "fin_funnel_1", "pin":  1, "color":  "white", "disabled":  false},
-    {"name":  "fin_funnel_2", "pin":  2, "color":  "white"},
-    {"name":  "fakething", "pin":  45, "color":  "white", "disabled":  true}
+    {
+      "name": "head",
+      "pin": 0,
+      "color": "green"
+    },
+    {
+      "name": "chest",
+      "pin": 1,
+      "color": "green"
+    },
+    {
+      "name": "fin_funnel_1",
+      "pin": 2,
+      "color": "white",
+      "disabled": false
+    },
+    {
+      "name": "fin_funnel_2",
+      "pin": 3,
+      "color": "white"
+    },
+    {
+      "name": "fin_funnel_3",
+      "pin": 4,
+      "color": "white"
+    },
+    {
+      "name": "fin_funnel_4",
+      "pin": 5,
+      "color": "white"
+    },
+    {
+      "name": "fin_funnel_5",
+      "pin": 6,
+      "color": "white"
+    },
+    {
+      "name": "fin_funnel_6",
+      "pin": 7,
+      "color": "white"
+    },
+    {
+      "name": "fakething",
+      "pin": 45,
+      "color": "white",
+      "disabled": true
+    }
   ],
-  "lightshow":  [
-     {"name":  "Activate Gundam", "path":  "activation", "method":  "activation"}
+  "lightshow": [
+    {
+      "name": "Activate Gundam",
+      "path": "activation",
+      "method": "activation"
+    },
+     {
+      "name": "Fire Fin Funnels",
+      "path": "fire_funnels",
+      "method": "fire_funnels"
+    }
   ]
 }

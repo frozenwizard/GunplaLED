@@ -9,6 +9,9 @@ from src.gunpla.GenericGundam import GenericGundam
 from src.phew import server, connect_to_wifi
 from src.phew.server import Request, Response
 from src.phew.template import render_template
+from src.pi.LED import LED
+from src.pi.board_led import BoardLED
+from src.pi.led_effect import LEDEffects
 
 
 class WebServer:
@@ -19,7 +22,7 @@ class WebServer:
     def __init__(self, configuration: dict):
         self.settings: dict = configuration
         self.gundam: GenericGundam = settings.webserver['model']
-        self.board_led: Pin = Pin("LED", Pin.OUT)
+        self.board_led: LED = BoardLED()
 
     def index(self, request: Request) -> Response:
         return await render_template("src/www/index.html",
@@ -30,29 +33,11 @@ class WebServer:
         """
         Sanity check to make sure webserver is running.
         """
-        self.board_led.on()
-        time.sleep(0.25)
-        self.board_led.off()
-        time.sleep(0.25)
-        self.board_led.on()
-        time.sleep(0.25)
-        self.board_led.off()
+        LEDEffects.blink(self.board_led)
         return Response("chirp", 200)
 
     def catchall(self, request: Request):
         return Response("Not found", 404)
-
-    def blink(self) -> None:
-        """
-        Blinks the onboard LED twice
-        """
-        self.board_led.on()
-        time.sleep(0.5)
-        self.board_led.off()
-        time.sleep(0.5)
-        self.board_led.on()
-        time.sleep(0.5)
-        self.board_led.off()
 
     def main(self):
         network.hostname(self.settings['hostname'])
@@ -61,7 +46,7 @@ class WebServer:
         ipaddress: str = connect_to_wifi(self.settings['ssid'], self.settings['password'])
         if ipaddress:
             logging.info(f"Server started on {ipaddress}")
-            self.blink()
+            LEDEffects.blink(self.board_led)
         else:
             logging.error("Server failed to connect")
             sys.exit("Cannot start server")
