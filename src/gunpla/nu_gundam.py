@@ -30,6 +30,9 @@ class NuGundam(BaseGundam):
         return Response("finished", 200)
 
     def fire_funnels(self, request: Request) -> Response:
+        """
+        Light Show that fires fin funnels in order
+        """
         fin1: LED = self._get_led_from_name("fin_funnel_1")
         fin2: LED = self._get_led_from_name("fin_funnel_2")
         fin3: LED = self._get_led_from_name("fin_funnel_3")

@@ -23,6 +23,9 @@ class WebServer:
         self.board_led: LED = BoardLED()
 
     def index(self, request: Request) -> Response:
+        """
+        Returns the root index page
+        """
         return await render_template("src/www/index.html",
                                      title=self.gundam.config['name'],
                                      all_buttons=self.gundam.config['leds'])
@@ -35,9 +38,15 @@ class WebServer:
         return Response("chirp", 200)
 
     def catchall(self, request: Request):
+        """
+        Generic handler to catch any routing error
+        """
         return Response("Not found", 404)
 
     def main(self):
+        """
+        Main runner of the webserver.  Loads configurations, paths, connects to wifi and runs the server
+        """
         network.hostname(self.settings['hostname'])
         logging.info(f"Set hostname to {network.hostname()}")
         logging.info(f"Connect to {self.settings['ssid']} with {self.settings['password']}")

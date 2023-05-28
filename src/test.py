@@ -9,6 +9,9 @@ tim = Timer()
 
 
 def tick(timer):
+    """
+    For a given interval configured with the timer, toggles the onboard LED.
+    """
     global led
     led.toggle()
 
