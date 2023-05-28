@@ -3,6 +3,7 @@ import json
 from machine import Pin
 
 from src.pi.LED import LED
+from src.pi.board_led import BoardLED
 from src.phew.server import logging
 from src.phew import server
 from src.phew.server import Response, Request
@@ -10,7 +11,7 @@ from src.pi.DisabledLED import DisabledLED
 
 
 class BaseGundam:
-    board_led = Pin("LED", Pin.OUT)
+    board_led = BoardLED()
 
     def __init__(self):
         with open(self.get_config_file()) as config_contents:
