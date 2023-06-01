@@ -28,7 +28,8 @@ class WebServer:
         """
         return await render_template("src/www/index.html",
                                      title=self.gundam.config['name'],
-                                     all_buttons=self.gundam.config['leds'])
+                                     all_leds=self.gundam.config['leds'],
+                                     lightshows=self.gundam.config['lightshow'])
 
     def canary(self, request: Request) -> Response:
         """

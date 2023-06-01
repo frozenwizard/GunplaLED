@@ -12,17 +12,17 @@
     <form action="./led/{0}/off">
         <input type="submit" value="Turn {0} off">
     </form>
-</li>\n""".format(itm["name"]) for itm in all_buttons])
+</li>\n""".format(itm["name"]) for itm in all_leds])
 }}
 
 <p>Light Show</p>
-<!--TODO: convert this to work like individual lights above -->
-<form action="./lightshow/activation">
-    <input type="submit" value="Activate Nu Gundam">
-</form>
-<form action="./lightshow/fire_funnels">
-    <input type="submit" value="Fire!">
-</form>
+{{
+"".join(["""<li>
+    <form action="./lightshow/{0}">
+        <input type="submit" value="{1}">
+    </form>
+</li>\n""".format(itm['path'], itm["name"]) for itm in lightshows])
+}}
 <br>
 <p>Sanity</p>
 <form action="./all/on">
