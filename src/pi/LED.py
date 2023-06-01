@@ -32,4 +32,4 @@ class LED:
         """
         :return: The underlying Raspberry Pi Pico Pin of the LED.
         """
-        return self.pin()
+        return self.pin

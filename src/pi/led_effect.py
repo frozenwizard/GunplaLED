@@ -44,7 +44,8 @@ class LEDEffects:
         :param speed:
         :return:
         """
-        pwm = PWM(led.pin())
+
+        pwm = PWM(led.pin)
         pwm.freq(1000)
         start = int((65025 * start_percent) / 100)
         end = int((65025 * end_percent) / 100)
