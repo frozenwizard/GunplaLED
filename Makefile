@@ -10,8 +10,9 @@ setup:  ## Downloads and setups required dependencies
 	mkdir micropython
 	wget -P micropython https://micropython.org/resources/firmware/rp2-pico-w-20230426-v1.20.0.uf2
 	cp src/config.py.template src/settings.py
-	#install pip3
-	# pip install rshell
+	pyenv install $(cat .python-version)
+	pyenv local $(cat .python-version)
+	pip install -r requirements.txt
 
 .PHONY: install-micropython-ubuntu
 install-micropython-ubuntu:  ## Installs micropython to pi board on ubuntu

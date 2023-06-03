@@ -10,7 +10,7 @@ When I was building RX-93 Nu Gundam ver ka, it lets you use a green LED module t
 ## Goals of this project
 * Be simple for anyone not technical to install and configure LEDs to their gunpla
 * Widespread Gunpla kit support
-* Simple installation and configuration
+* Thorough LED installation documentation and simple configuration
 * Eventual support of additional microcontrollers
 * Widespread community support
 
@@ -18,18 +18,16 @@ When I was building RX-93 Nu Gundam ver ka, it lets you use a green LED module t
 This project is in early alpha.  It is considered to be functional and fulfills the minimum requirements of hosting a webserver that can control individual LEDs.  However, there is still much to be done in terms of adding support for more gunpla models, expanding lightshows, bug fixes, etc.  Therefore, until this project hits beta, there is no backwards support as areas of the codebase are rapidly changing and improving.  Thus, when upgrading, it is recommended to start from the initial setup.
 
 # Installation
-At this time installation requires setting up a local Python development environment as some of the tooling requires it.  The recommended OS's are Linux and MacOS.  Windows is not currently supported but is on the roadmap as it has a more complicated way of talking to the Raspberry Pi.
-See [asdf](docs/installation.md) for a full walkthrough of how to 
+At this time installation requires setting up a local Python development environment as some of the tooling requires it.  The recommended OS's are GNU/Linux(Ubuntu) and macOS.  Windows is not currently supported but is on the roadmap as it has a more complicated way of talking to the Raspberry Pi.
+See the [installation instructions](docs/installation.md) for a full walkthrough of how to install
 ## Requirements
 * cli: make, python, pip, pyenv (optional)
 
 # Developer Setup
-The developer setup to add and contribute to the project mainly consists of setting up an IDE environment.  Please follow the process in [asdf](docs/installation.md) before continuing.
-The recommended IDE is [Pycharm Community](https://www.jetbrains.com/pycharm). You will need to install the [micropython plugin](https://plugins.jetbrains.com/plugin/9777-micropython).
-
+The [developer setup](docs/developer_setup.md) to add and contribute to the project mainly consists of setting up an IDE environment in addition to setting up the tooling in [installation](docs/installation.md).
 
 # Contributing
-Contributions are very much welcome.  For bugs and/or feature requests file a [issue]().  If you'd like to contribute to a specific area such as HTML, additonal kit support, etc submit an issue as well.
+Contributions are very much welcome.  For bugs and/or feature requests file a [issue](https://github.com/frozenwizard/GunplaLED/issues).  If you'd like to contribute to a specific area such as HTML, additional kit support, etc submit a [PR](https://github.com/frozenwizard/GunplaLED/pulls) as well.
 
 # Roadmap
 * Better documentation for installation of each LED's on each kit
