@@ -36,5 +36,6 @@ Contributions are very much welcome.  For bugs and/or feature requests file a [i
 * Better UI
 * More lightshows and LED effects
 * Easier installation and configuration
-* Internal webserver
+* Package and deploy dependencies better
+* Add the ability to play sounds
 
