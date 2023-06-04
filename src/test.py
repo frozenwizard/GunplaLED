@@ -2,18 +2,23 @@
 # This requires just the basic Raspberry Pi Pico W
 # Once deployed on the Pico W, it will flash the onboard LED.
 
-from machine import Pin, Timer
+from machine import Pin
+import time
 
-led = Pin("LED", Pin.OUT)
-tim = Timer()
+def main():
+    led = Pin("LED", Pin.OUT)
+    led.on()
+    time.sleep(0.5)
+    led.off()
+    time.sleep(0.5)
+    led.on()
+    time.sleep(0.5)
+    led.off()
+    time.sleep(0.5)
+    led.on()
+    time.sleep(0.5)
+    led.off()
+    time.sleep(0.5)
 
-
-def tick(timer):
-    """
-    For a given interval configured with the timer, toggles the onboard LED.
-    """
-    global led
-    led.toggle()
-
-
-tim.init(freq=2.5, mode=Timer.PERIODIC, callback=tick)
+if __name__ == "__main__":
+    main()
