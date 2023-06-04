@@ -1,14 +1,13 @@
 
-#Intellij
+#PyCharm
 .idea/
 *.iml
-micropython/
-target/
-
 
 #Source
+micropython/
+target/
 src/settings.py
 src/phew
-
-#OS garbase
+temp/
+#OS garbage
 .DS_STORE

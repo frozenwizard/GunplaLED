@@ -24,7 +24,7 @@ If you have not done so yet git clone this repo to your desired directory.  The 
 ### Install tooling
 Run the following make command to download micropython, install python, python requirements and generate the config file.  This is a one time setup.
 ```shell
-make setup
+make setup && pyenv activate gunpla
 ```
 
 ### Install MicroPython to the Raspberry Pico board
