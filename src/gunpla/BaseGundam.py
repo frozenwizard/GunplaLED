@@ -1,7 +1,5 @@
 import json
 
-from machine import Pin
-
 from src.pi.LED import LED
 from src.pi.board_led import BoardLED
 from src.phew.server import logging
@@ -11,6 +9,9 @@ from src.pi.DisabledLED import DisabledLED
 
 
 class BaseGundam:
+    """
+    Base Gunpla.
+    """
     board_led = BoardLED()
 
     def __init__(self):
@@ -22,7 +23,7 @@ class BaseGundam:
         Returns the path to the corresesponding Gundam json file
         This is abstract
         """
-        pass
+        raise Exception("Not implemented")
 
     def add_routes(self, webserver: server) -> None:
         """

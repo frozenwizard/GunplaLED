@@ -1,4 +1,6 @@
 import time
+import random
+
 from src.gunpla.BaseGundam import BaseGundam
 from src.phew.server import Response, Request
 from src.pi import LED
@@ -46,5 +48,27 @@ class NuGundam(BaseGundam):
         LEDEffects.fire(fin4)
         LEDEffects.fire(fin5)
         LEDEffects.fire(fin6)
+
+        return Response("finished", 200)
+
+    def random_funnels(self, request: Request) -> Response:
+        """
+        Randomly fires fin funnels that are enabled for an infinite amount of time
+        This currently does not end and needs thread management to properly be able to be halted.
+        """
+        funnels = [self._get_led_from_name("fin_funnel_1"), self._get_led_from_name("fin_funnel_2"),
+                   self._get_led_from_name("fin_funnel_3"), self._get_led_from_name("fin_funnel_4"),
+                   self._get_led_from_name("fin_funnel_5"), self._get_led_from_name("fin_funnel_6")]
+
+        # Filter out funnels that are disabled.
+        funnels = [funnel for funnel in funnels if funnel.enabled()]
+
+        if not funnels:
+            return Response("No funnels can be fired", 400)
+
+        while True:
+            funnel = random.choice(funnels)
+            LEDEffects.fire(funnel)
+            time.sleep(random.uniform(0, 3))
 
         return Response("finished", 200)
