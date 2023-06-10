@@ -59,6 +59,11 @@
       "name": "Fire Fin Funnels",
       "path": "fire_funnels",
       "method": "fire_funnels"
+    },
+     {
+      "name": "Random",
+      "path": "random",
+      "method": "random_funnels"
     }
   ]
 }

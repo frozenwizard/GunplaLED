@@ -2,10 +2,15 @@
 # This requires just the basic Raspberry Pi Pico W
 # Once deployed on the Pico W, it will flash the onboard LED.
 
-from machine import Pin
 import time
 
+from machine import Pin
+
+
 def main():
+    """
+    Blinks the onboard Raspberry Pi Pico W LED several times.
+    """
     led = Pin("LED", Pin.OUT)
     led.on()
     time.sleep(0.5)
@@ -19,6 +24,7 @@ def main():
     time.sleep(0.5)
     led.off()
     time.sleep(0.5)
+
 
 if __name__ == "__main__":
     main()

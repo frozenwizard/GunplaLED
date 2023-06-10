@@ -10,6 +10,12 @@ class LED:
         self.pin: Pin = Pin(pin_number, Pin.OUT)
         self.led_name = name
 
+    def enabled(self) -> bool:
+        '''
+        Returns false as the LED is not connected
+        '''
+        return True
+
     def on(self) -> None:
         """
         Turns on the LED light
