@@ -55,7 +55,8 @@ format:  ## Format the Python code
 	autopep8 -i -r src/
 
 .PHONY: lint
-lint: ## Lints the python code
+lint: ## Lints the python code and documents
+	markdownlint --fix **/*.md
 	pylint src/  --ignore src/phew
 
 help:  ## Show this help.
