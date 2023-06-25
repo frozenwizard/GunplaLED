@@ -41,3 +41,25 @@ main.main()
 ```
 
 The server logs start to appear in the console.
+
+### Headless Debugging
+
+The webserver doesn't need to be run to test light shows or individual effects, it can be run by deploying the code
+entering the ```repl``` and importing the required classes.
+
+Light shows and other effects can be activated such as the following.
+
+```python
+from src.gunpla.nu_gundam import NuGundam
+g = NuGundam()
+g.activation(None)
+```
+
+Individual effects can be used as such on a individual LED directly
+
+```python
+from src.pi.LED import LED
+from src.pi.led_effect import LEDEffects
+led = LED(0, "0")
+LEDEffects.fire(led)
+```
