@@ -1,0 +1,93 @@
+{
+  "name": "RX-0 Unicorn Banshee",
+  "leds": [
+    {
+      "name": "r_leg",
+      "pin": 0,
+      "color": "orange"
+    },
+    {
+      "name": "l_leg",
+      "pin": 16,
+      "color": "orange"
+    },
+    {
+      "name": "r_thigh",
+      "pin": 1,
+      "color": "orange"
+    },
+    {
+      "name": "l_thigh",
+      "pin": 17,
+      "color": "orange"
+    }
+    ,
+    {
+      "name": "r_waist",
+      "pin": 2,
+      "color": "orange"
+    },
+    {
+      "name": "l_waist",
+      "pin": 18,
+      "color": "orange"
+    },
+    {
+      "name": "r_chest",
+      "pin": 3,
+      "color": "orange"
+    },
+    {
+      "name": "l_chest",
+      "pin": 19,
+      "color": "orange"
+    },
+    {
+      "name": "r_pauldron",
+      "pin": 4,
+      "color": "orange"
+    },
+    {
+      "name": "l_pauldron",
+      "pin": 20,
+      "color": "orange"
+    },
+    {
+      "name": "r_arm",
+      "pin": 5,
+      "color": "orange"
+    },
+    {
+      "name": "l_arm",
+      "pin": 21,
+      "color": "orange"
+    },
+    {
+      "name": "r_weapon",
+      "pin": 6,
+      "color": "orange"
+    },
+    {
+      "name": "l_weapon",
+      "pin": 22,
+      "color": "orange"
+    },
+    {
+      "name": "head",
+      "pin": 7,
+      "color": "orange"
+    },
+    {
+      "name": "head_camera",
+      "pin": 23,
+      "color": "green"
+    }
+  ],
+  "lightshow": [
+    {
+      "name": "Glow Gundam",
+      "path": "glow",
+      "method": "glow"
+    }
+  ]
+}
