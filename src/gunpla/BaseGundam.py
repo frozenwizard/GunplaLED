@@ -20,7 +20,7 @@ class BaseGundam:
 
     def get_config_file(self) -> str:
         """
-        Returns the path to the corresesponding Gundam json file
+        Returns the path to the corresponding Gundam json file
         This is abstract
         """
         raise Exception("Not implemented")
@@ -66,18 +66,24 @@ class BaseGundam:
         """
         logging.info("turning on all leds")
         try:
-            leds: str = ""
-            for led_entry in self.config['leds']:
-                led_name = led_entry['name']
-                led = self._get_led_from_name(led_name)
-                led.on()
-                if isinstance(led, DisabledLED):
-                    leds += f"{led_name}: disabled\n"
-                else:
-                    leds += f"{led_name}: on\n"
+            leds = self._all_leds_on()
             return Response(f"<html>All on\n {leds} </html>", 200)
         except Exception as ex:
             return Response(str(ex), 500)
+    def _all_leds_on(self) -> str:
+        """
+        Turns all LEDs on
+        """
+        leds: str = ""
+        for led_entry in self.config['leds']:
+            led_name = led_entry['name']
+            led = self._get_led_from_name(led_name)
+            led.on()
+            if isinstance(led, DisabledLED):
+                leds += f"{led_name}: disabled\n"
+            else:
+                leds += f"{led_name}: on\n"
+        return leds
 
     def all_off(self, request: Request) -> Response:
         """
@@ -85,18 +91,38 @@ class BaseGundam:
         """
         logging.info("turning off all leds")
         try:
-            leds: str = ""
-            for led_entry in self.config['leds']:
-                led_name = led_entry['name']
-                led = self._get_led_from_name(led_name)
-                led.off()
-                if isinstance(led, DisabledLED):
-                    leds += f"{led_name}: disabled\n"
-                else:
-                    leds += f"{led_name}: off\n"
+            leds = self._all_leds_off()
             return Response("All off\n" + leds, 200)
         except Exception as ex:
             return Response(str(ex), 500)
+
+    def _all_leds_off(self) -> str:
+        """"
+        Turns all LEDs off
+        """
+        leds: str = ""
+        for led_entry in self.config['leds']:
+            led_name = led_entry['name']
+            led = self._get_led_from_name(led_name)
+            led.off()
+            if isinstance(led, DisabledLED):
+                leds += f"{led_name}: disabled\n"
+            else:
+                leds += f"{led_name}: off\n"
+        return leds
+
+    def get_all_leds(self, filter: list[str] = []) -> list[LED]:
+        """
+        Returns all LEDs configured, enabled or disabled.  But not the board_led
+        """
+        leds = []
+        for led_entry in self.config['leds']:
+            led_name = led_entry['name']
+            if led_name in filter:
+                continue
+            led = self._get_led_from_name(led_name)
+            leds.append(led)
+        return leds
 
     def _get_led_from_name(self, led_name: str) -> LED:
         """

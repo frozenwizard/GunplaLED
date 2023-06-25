@@ -68,7 +68,7 @@ class NuGundam(BaseGundam):
 
         while True:
             funnel = random.choice(funnels)
-            LEDEffects.fire(funnel)
+            LEDEffects.charge_fire(funnel)
             time.sleep(random.uniform(0, 3))
 
         return Response("finished", 200)
