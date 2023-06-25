@@ -2,7 +2,7 @@ import sys
 import network
 
 from src import settings
-from src.gunpla.GenericGundam import GenericGundam
+from src.gunpla.generic_gundam import GenericGundam
 from src.pi.LED import LED
 from src.pi.board_led import BoardLED
 from src.pi.led_effect import LEDEffects

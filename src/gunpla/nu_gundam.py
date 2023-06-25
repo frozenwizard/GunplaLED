@@ -1,7 +1,7 @@
 import time
 import random
 
-from src.gunpla.BaseGundam import BaseGundam
+from src.gunpla.base_gundam import BaseGundam
 from src.phew.server import Response, Request
 from src.pi import LED
 from src.pi.led_effect import LEDEffects

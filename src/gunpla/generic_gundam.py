@@ -1,4 +1,4 @@
-from src.gunpla.BaseGundam import BaseGundam
+from src.gunpla.base_gundam import BaseGundam
 
 
 class GenericGundam(BaseGundam):

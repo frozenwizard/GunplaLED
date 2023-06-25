@@ -5,7 +5,7 @@ from src.pi.board_led import BoardLED
 from src.phew.server import logging
 from src.phew import server
 from src.phew.server import Response, Request
-from src.pi.DisabledLED import DisabledLED
+from src.pi.disabled_LED import DisabledLED
 
 
 class BaseGundam:
