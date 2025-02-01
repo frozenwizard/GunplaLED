@@ -1,11 +1,10 @@
 import json
 
-from src.pi.LED import LED
-from src.pi.board_led import BoardLED
-from src.phew.server import logging
 from src.phew import server
-from src.phew.server import Response, Request
+from src.phew.server import Request, Response, logging
+from src.pi.board_led import BoardLED
 from src.pi.disabled_LED import DisabledLED
+from src.pi.LED import LED
 
 
 class BaseGundam:
