@@ -9,6 +9,17 @@ on:
       - main
 
 jobs:
+    build:
+      name: Sort imports
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+        - name: Sort the imports
+          uses: isort/isort-action@v1.1.1
+          with:
+            sort-paths: src/
+            requirements-files: "requirements.txt"
     autopep8:
       runs-on: ubuntu-latest
       steps:

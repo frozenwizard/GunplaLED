@@ -53,11 +53,13 @@ deploy:  ## Deploys the built artifacts to the pi board
 .PHONY: format
 format:  ## Format the Python code
 	autopep8 -i -r src/
+	isort .
 
 .PHONY: lint
 lint: ## Lints the python code and documents
 	markdownlint --fix **/*.md
 	pylint src/  --ignore src/phew
+
 
 help:  ## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
