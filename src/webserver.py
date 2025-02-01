@@ -1,15 +1,15 @@
 import sys
+
 import network
 
 from src import settings
 from src.gunpla.generic_gundam import GenericGundam
-from src.pi.LED import LED
-from src.pi.board_led import BoardLED
-from src.pi.led_effect import LEDEffects
-
-from src.phew import server, connect_to_wifi
-from src.phew.server import logging, Request, Response
+from src.phew import connect_to_wifi, server
+from src.phew.server import Request, Response, logging
 from src.phew.template import render_template
+from src.pi.board_led import BoardLED
+from src.pi.LED import LED
+from src.pi.led_effect import LEDEffects
 
 
 class WebServer:

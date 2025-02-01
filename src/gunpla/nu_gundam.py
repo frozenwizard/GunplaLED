@@ -1,8 +1,8 @@
-import time
 import random
+import time
 
 from src.gunpla.base_gundam import BaseGundam
-from src.phew.server import Response, Request
+from src.phew.server import Request, Response
 from src.pi import LED
 from src.pi.led_effect import LEDEffects
 
