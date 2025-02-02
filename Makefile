@@ -16,7 +16,7 @@ setup-python-env: ## Setups python dev environment
 .PHONY: setup
 setup:  ## Downloads and setups required dependencies
 	mkdir micropython
-	wget -P micropython https://micropython.org/resources/firmware/rp2-pico-w-20230426-v1.20.0.uf2
+	wget -P micropython https://micropython.org/resources/firmware/RPI_PICO2-20241129-v1.24.1.uf2
 	mkdir temp
 	cp src/config.py.template src/settings.py
 
