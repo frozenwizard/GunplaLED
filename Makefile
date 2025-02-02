@@ -10,7 +10,7 @@ clean:  ##Nukes the target and micropython dirs
 .PHONY: setup
 setup:  ## Downloads and setups required dependencies
 	mkdir micropython
-	wget -P micropython https://micropython.org/resources/firmware/rp2-pico-w-20230426-v1.20.0.uf2
+	wget -P micropython https://micropython.org/resources/firmware/RPI_PICO2-20241129-v1.24.1.uf2
 	mkdir temp
 	wget -P temp/phew https://github.com/pimoroni/phew/archive/refs/tags/v0.0.3.zip
 	unzip temp/phew/v0.0.3.zip -d temp/
