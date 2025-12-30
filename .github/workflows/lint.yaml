@@ -31,5 +31,4 @@ jobs:
         uses: cardinalby/schema-validator-action@v3
         with:
           file: 'src/config/*.json'
-          schema: 'src/config/gundam_led_config.schema.json'
-          exclude: 'src/config/gundam_led_config.schema.json'
+#          schema: 'src/config/gundam_led_config.schema.json'
