@@ -59,11 +59,25 @@ class WebServer:
             logging.error("Server failed to connect")
             sys.exit("Cannot start server")
 
+        server.set_callback(self.catchall)
+
+        self._add_routes()
+
+        server.run()
+
+    def _add_routes(self):
+        """
+           Given a server adds all endpoints for Leds and lightshows
+        """
         server.add_route("/", self.index, methods=["GET"])
         server.add_route("/index", self.index, methods=["GET"])
         server.add_route("/canary", self.canary, methods=["GET"])
         server.set_callback(self.catchall)
 
-        self.gundam.add_routes(server)
-
-        server.run()
+        server.add_route("/led/<led_name>/on", self.gundam.led_on, methods=["GET"])
+        server.add_route("/led/<led_name>/off", self.gundam.led_off, methods=["GET"])
+        server.add_route("/all/on", self.gundam.all_on, methods=["GET"])
+        server.add_route("/all/off", self.gundam.all_off, methods=["GET"])
+        for lightshow in self.gundam.config['lightshow']:
+            server.add_route(f"/lightshow/{lightshow['path']}", getattr(self, lightshow['method']),
+                             methods=["GET"])

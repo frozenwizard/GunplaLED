@@ -24,17 +24,6 @@ class BaseGundam:
         """
         raise Exception("Not implemented")
 
-    def add_routes(self, webserver: server) -> None:
-        """
-        Given a server adds all endpoints for Leds and lightshows
-        """
-        webserver.add_route("/led/<led_name>/on", self.led_on, methods=["GET"])
-        webserver.add_route("/led/<led_name>/off", self.led_off, methods=["GET"])
-        webserver.add_route("/all/on", self.all_on, methods=["GET"])
-        webserver.add_route("/all/off", self.all_off, methods=["GET"])
-        for lightshow in self.config['lightshow']:
-            webserver.add_route(f"/lightshow/{lightshow['path']}", getattr(self, lightshow['method']), methods=["GET"])
-
     def led_on(self, request: Request, led_name: str) -> Response:
         """
         Turns a Single LED on by name
@@ -69,6 +58,7 @@ class BaseGundam:
             return Response(f"<html>All on\n {leds} </html>", 200)
         except Exception as ex:
             return Response(str(ex), 500)
+
     def _all_leds_on(self) -> str:
         """
         Turns all LEDs on
