@@ -12,10 +12,10 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "pin", "color"],
+        "required": ["name", "pin"],
         "properties": {
           "name": { "type": "string" },
-          "pin": { "type": "integer", "minimum": 0, "maximum": 21 },
+          "pin": { "type": "integer", "minimum": 0, "maximum": 22 },
           "color": { "type": "string" },
           "disabled": { "type": "boolean", "default": false }
         }

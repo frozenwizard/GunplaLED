@@ -69,18 +69,13 @@
       "color": "orange"
     },
     {
-      "name": "l_weapon",
-      "pin": 22,
-      "color": "orange"
-    },
-    {
       "name": "head",
       "pin": 7,
       "color": "orange"
     },
     {
       "name": "head_camera",
-      "pin": 23,
+      "pin": 22,
       "color": "green"
     }
   ],
