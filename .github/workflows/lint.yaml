@@ -32,3 +32,4 @@ jobs:
         with:
           file: 'src/config/*.json'
           schema: 'src/config/gundam_led_config.schema.json'
+          exclude: 'src/config/gundam_led_config.schema.json'
