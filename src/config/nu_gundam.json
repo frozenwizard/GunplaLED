@@ -1,4 +1,5 @@
 {
+  "$schema": "gundam_led_config.schema.json",
   "name": "RX-93 Nu Gundam",
   "leds": [
     {

@@ -1,4 +1,5 @@
 {
+  "$schema": "gundam_led_config.schema.json",
   "name": "gunpla",
   "leds": [
     {"name":  "head", "pin": 0, "color":  "green"},
@@ -11,5 +12,7 @@
     {"name":  "weapon2", "pin":  7, "color":  "red"},
     {"name":  "weapon2_camera", "pin":  8, "color":  "green"},
     {"name":  "vernier", "pin": 10, "color":  "blue"}
+  ],
+  "lightshow": [
   ]
 }
