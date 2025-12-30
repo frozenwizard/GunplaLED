@@ -27,5 +27,5 @@ jobs:
       - name: Validate gunpla configs
         uses: dsanders11/json-schema-validate-action@v1.4.0
         with:
-          schema: ./src/config/gundam_led_config.schema.json
-          files: ./src/config/*.json
+          schema: src/config/gundam_led_config.schema.json
+          files: src/config/*.json
