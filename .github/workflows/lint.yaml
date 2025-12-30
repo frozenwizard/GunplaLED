@@ -20,3 +20,12 @@ jobs:
       with:
         args: '**/*.md'
         config: .markdownlint.yaml
+  validate-json:
+    name: Validate configuration files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate gunpla configs
+        uses: dsanders11/json-schema-validate-action@v1.4.0
+        with:
+          schema: ./src/config/gundam_led_config.schema.json
+          files: ./src/config/*.json
