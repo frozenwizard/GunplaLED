@@ -1,4 +1,5 @@
 {
+  "$schema": "gundam_led_config.schema.json",
   "name": "RX-93 Nu Gundam",
   "leds": [
     {
@@ -41,12 +42,6 @@
       "name": "fin_funnel_6",
       "pin": 7,
       "color": "white"
-    },
-    {
-      "name": "fakething",
-      "pin": 45,
-      "color": "white",
-      "disabled": true
     }
   ],
   "lightshow": [
