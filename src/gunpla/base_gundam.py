@@ -1,10 +1,9 @@
 import json
 
-from src.phew import server
-from src.phew.server import Request, Response, logging
 from src.pi.board_led import BoardLED
 from src.pi.disabled_LED import DisabledLED
 from src.pi.LED import LED
+from src.server.Wrappers import safe_execution
 
 
 class BaseGundam:
@@ -24,40 +23,31 @@ class BaseGundam:
         """
         raise Exception("Not implemented")
 
-    def led_on(self, request: Request, led_name: str) -> Response:
+    def led_on(self, led_name: str):
         """
         Turns a Single LED on by name
         """
-        logging.info(f"turning on {led_name}")
-        try:
-            led = self._get_led_from_name(led_name)
-            led.on()
-            return Response(f"{led_name}: on", 200)
-        except Exception as ex:
-            return Response(str(ex), 500)
+        print(f"turning on {led_name}")
+        led = self._get_led_from_name(led_name)
+        led.on()
 
-    def led_off(self, request: Request, led_name: str) -> Response:
+    def led_off(self,  led_name: str) -> None:
         """
         Turns a single LED off by name
         """
-        logging.info(f"turning off {led_name}")
-        try:
-            led = self._get_led_from_name(led_name)
-            led.off()
-            return Response(f"{led_name}: off", 200)
-        except Exception as ex:
-            return Response(str(ex), 500)
+        print(f"turning off {led_name}")
+        led = self._get_led_from_name(led_name)
+        led.off()
 
-    def all_on(self, request: Request) -> Response:
+    # TODO: make this not need the safe_execution and do it when we register paths
+
+    @safe_execution
+    def all_on(self) -> None:
         """
         Turns all configured LED's on.
         """
-        logging.info("turning on all leds")
-        try:
-            leds = self._all_leds_on()
-            return Response(f"<html>All on\n {leds} </html>", 200)
-        except Exception as ex:
-            return Response(str(ex), 500)
+        print("turning on all leds")
+        self._all_leds_on()
 
     def _all_leds_on(self) -> str:
         """
@@ -74,16 +64,15 @@ class BaseGundam:
                 leds += f"{led_name}: on\n"
         return leds
 
-    def all_off(self, request: Request) -> Response:
+    # TODO: make this not need the safe_execution and do it when we register paths
+
+    @safe_execution
+    def all_off(self) -> None:
         """
         Turns all configured LED's off
         """
-        logging.info("turning off all leds")
-        try:
-            leds = self._all_leds_off()
-            return Response("All off\n" + leds, 200)
-        except Exception as ex:
-            return Response(str(ex), 500)
+        print("turning off all leds")
+        self._all_leds_off()
 
     def _all_leds_off(self) -> str:
         """"
@@ -122,7 +111,7 @@ class BaseGundam:
         """
         entry = self.__get_entry_from_name(led_name)
         if 'disabled' in entry and entry['disabled']:
-            logging.debug(f"{led_name} is disabled")
+            print(f"{led_name} is disabled")
             return DisabledLED(led_name)
         return LED(entry['pin'], led_name)
 

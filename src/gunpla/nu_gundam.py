@@ -1,9 +1,7 @@
+import asyncio
 import random
-import time
 
 from src.gunpla.base_gundam import BaseGundam
-from src.phew.server import Request, Response
-from src.pi import LED
 from src.pi.led_effect import LEDEffects
 
 
@@ -18,40 +16,27 @@ class NuGundam(BaseGundam):
         """
         return "src/config/nu_gundam.json"
 
-    def activation(self, request: Request) -> Response:
+    async def activation(self) -> None:
         """
         Runs the activation lightshow
         this is just a sample test
         """
         head_led = self._get_led_from_name("head")
         head_led.on()
-        time.sleep(0.1)
+        await asyncio.sleep(0.1)
         head_led.off()
-        time.sleep(0.5)
-        LEDEffects.brighten(head_led)
-        return Response("finished", 200)
+        await asyncio.sleep(0.5)
+        await LEDEffects.brighten(head_led)
 
-    def fire_funnels(self, request: Request) -> Response:
+    async def fire_funnels(self, request: Request) -> None:
         """
         Light Show that fires fin funnels in order
         """
-        fin1: LED = self._get_led_from_name("fin_funnel_1")
-        fin2: LED = self._get_led_from_name("fin_funnel_2")
-        fin3: LED = self._get_led_from_name("fin_funnel_3")
-        fin4: LED = self._get_led_from_name("fin_funnel_4")
-        fin5: LED = self._get_led_from_name("fin_funnel_5")
-        fin6: LED = self._get_led_from_name("fin_funnel_6")
+        for i in range(1, 7):
+            funnel = self._get_led_from_name(f"fin_funnel_{i}")
+            await LEDEffects.fire(funnel)
 
-        LEDEffects.fire(fin1)
-        LEDEffects.fire(fin2)
-        LEDEffects.fire(fin3)
-        LEDEffects.fire(fin4)
-        LEDEffects.fire(fin5)
-        LEDEffects.fire(fin6)
-
-        return Response("finished", 200)
-
-    def random_funnels(self, request: Request) -> Response:
+    async def random_funnels(self, request: Request) -> Response:
         """
         Randomly fires fin funnels that are enabled for an infinite amount of time
         This currently does not end and needs thread management to properly be able to be halted.
@@ -68,7 +53,7 @@ class NuGundam(BaseGundam):
 
         while True:
             funnel = random.choice(funnels)
-            LEDEffects.charge_fire(funnel)
-            time.sleep(random.uniform(0, 3))
+            await LEDEffects.charge_fire(funnel)
+            await asyncio.sleep(random.uniform(0, 3))
 
         return Response("finished", 200)
