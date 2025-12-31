@@ -13,6 +13,7 @@ def lightshow_route(app, manager_attr="current_task"):
             if existing_task and not existing_task.done():
                 existing_task.cancel()
                 try:
+                    #TODO: turn all leds off
                     await existing_task  # Wait for cleanup
                 except asyncio.CancelledError:
                     pass

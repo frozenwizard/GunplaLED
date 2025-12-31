@@ -65,7 +65,6 @@ class BaseGundam:
         return leds
 
     # TODO: make this not need the safe_execution and do it when we register paths
-
     @safe_execution
     def all_off(self) -> None:
         """
@@ -89,14 +88,14 @@ class BaseGundam:
                 leds += f"{led_name}: off\n"
         return leds
 
-    def get_all_leds(self, filter: list[str] = []) -> list[LED]:
+    def get_all_leds(self, ignore_list: list[str] = []) -> list[LED]:
         """
         Returns all LEDs configured, enabled or disabled.  But not the board_led
         """
         leds = []
         for led_entry in self.config['leds']:
             led_name = led_entry['name']
-            if led_name in filter:
+            if led_name in ignore_list:
                 continue
             led = self._get_led_from_name(led_name)
             leds.append(led)

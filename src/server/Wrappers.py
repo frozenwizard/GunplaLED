@@ -21,6 +21,11 @@ def safe_execution(func):
 
 
 def create_show_handler(func):
+    """
+    Given a function, wraps it as a lighthow_route and safe_execution.
+    :param func:
+    :return:
+    """
     # note order matters for these
     @lightshow_route
     @safe_execution

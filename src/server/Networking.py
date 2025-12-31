@@ -1,4 +1,6 @@
 
+import time
+import network
 
 async def connect_to_wifi(ssid: str, password: str, attempts=10) -> str or None:
     """
@@ -9,9 +11,7 @@ async def connect_to_wifi(ssid: str, password: str, attempts=10) -> str or None:
     :param attempts: Number of attempts to connect before halting
     :return:
     """
-    import time
 
-    import network
 
     print(f"Connecting to {ssid} with {password}")
 
@@ -19,7 +19,7 @@ async def connect_to_wifi(ssid: str, password: str, attempts=10) -> str or None:
     wlan.active(True)
     wlan.connect(ssid, password)
 
-    for attempt in range(attempts):
+    for _ in range(attempts):
         if wlan.isconnected():
             print(f"Connected to {ssid}")
             return wlan.ifconfig()[0]

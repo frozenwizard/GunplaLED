@@ -78,7 +78,8 @@ class LEDEffects:
     async def brighten_all(leds: list[LED], start_percent: int = 0, end_percent: int = 100, speed: int = 10) -> None:
         """
         The current banshee amount of leds passed in causes it to I guess stack overflow and silently crash
-        around 30%  so this method should not be used until that's addressed.
+        around 30%  so this method should not be used until that's addressed.  I also don't think i understand all there
+        is to PWM.
         """
         pwms = []
         for led in leds:
