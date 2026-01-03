@@ -5,11 +5,10 @@ microdot
 The ``microdot`` module defines a few classes that help implement HTTP-based
 servers for MicroPython and standard Python.
 """
+import asyncio
 import io
 import re
 import time
-
-import asyncio
 
 try:
     import orjson as json
@@ -1280,7 +1279,7 @@ class Microdot:
 
         try:
             self.server = await asyncio.start_server(serve, host, port,
-                                                      ssl=ssl)
+                                                     ssl=ssl)
         except TypeError:  # pragma: no cover
             self.server = await asyncio.start_server(serve, host, port)
 
@@ -1330,7 +1329,7 @@ class Microdot:
             app.run(debug=True)
         """
         asyncio.run(self.start_server(host=host, port=port, debug=debug,
-                                       ssl=ssl))  # pragma: no cover
+                                      ssl=ssl))  # pragma: no cover
 
     def shutdown(self):
         """Request a server shutdown. The server will then exit its request

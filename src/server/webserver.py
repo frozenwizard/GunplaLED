@@ -1,6 +1,5 @@
-import sys
-
 import asyncio
+import sys
 
 from src.gunpla.generic_gundam import GenericGundam
 from src.hardware.Hardware import Hardware
