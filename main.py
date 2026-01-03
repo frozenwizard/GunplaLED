@@ -1,4 +1,4 @@
-import uasyncio
+import asyncio
 
 import src
 from src import settings
@@ -9,7 +9,7 @@ from src.server.webserver import WebServer
 def main():
     hardware: Hardware = src.hardware.get_hardware()
     webserver = WebServer(settings.webserver, hardware)
-    uasyncio.run( webserver.run())
+    asyncio.run( webserver.run())
 
 
 if __name__ == "__main__":

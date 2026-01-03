@@ -48,7 +48,7 @@ class VirtualHardware(Hardware):
         def __init__(self):
             pass
 
-        async def connect_to_wifi(self, ssid: str, password: str, attempts=10) -> str or None:
+        async def connect_to_wifi(self, ssid: str, password: str, attempts=10) -> str:
             return "123.123.123.123"
 
         def configure_host(self, host_name: str):
@@ -76,7 +76,6 @@ class VirtualHardware(Hardware):
     def board_led(self) -> BoardLED:
         return self.MockBoardLED()
 
-    @property
     def networking(self) -> Networking:
         return self.NoOpNetworking()
 

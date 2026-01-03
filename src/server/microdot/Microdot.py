@@ -9,7 +9,7 @@ import io
 import re
 import time
 
-import uasyncio
+import asyncio
 
 try:
     import orjson as json
@@ -28,7 +28,7 @@ try:
         if iscoroutinefunction(handler):
             ret = await handler(*args, **kwargs)
         else:
-            ret = await uasyncio.get_running_loop().run_in_executor(
+            ret = await asyncio.get_running_loop().run_in_executor(
                 None, partial(handler, *args, **kwargs))
         return ret
 except ImportError:  # pragma: no cover
@@ -38,7 +38,7 @@ except ImportError:  # pragma: no cover
     async def invoke_handler(handler, *args, **kwargs):
         """Invoke a handler and return the result.
 
-        This method runs sync handlers in the uasyncio thread, which can
+        This method runs sync handlers in the asyncio thread, which can
         potentially cause blocking and performance issues.
         """
         ret = handler(*args, **kwargs)
@@ -1240,7 +1240,7 @@ class Microdot:
 
         Example::
 
-            import uasyncio
+            import asyncio
             from microdot import Microdot
 
             app = Microdot()
@@ -1252,7 +1252,7 @@ class Microdot:
             async def main():
                 await app.start_server(debug=True)
 
-            uasyncio.run(main())
+            asyncio.run(main())
         """
         self.ssl = ssl
         self.debug = debug
@@ -1279,24 +1279,24 @@ class Microdot:
                 host=host, port=port))
 
         try:
-            self.server = await uasyncio.start_server(serve, host, port,
+            self.server = await asyncio.start_server(serve, host, port,
                                                       ssl=ssl)
         except TypeError:  # pragma: no cover
-            self.server = await uasyncio.start_server(serve, host, port)
+            self.server = await asyncio.start_server(serve, host, port)
 
         while True:
             try:
                 if hasattr(self.server, 'serve_forever'):  # pragma: no cover
                     try:
                         await self.server.serve_forever()
-                    except uasyncio.CancelledError:
+                    except asyncio.CancelledError:
                         pass
                 await self.server.wait_closed()
                 break
             except AttributeError:  # pragma: no cover
                 # the task hasn't been initialized in the server object yet
                 # wait a bit and try again
-                await uasyncio.sleep(0.1)
+                await asyncio.sleep(0.1)
 
     def run(self, host='0.0.0.0', port=5000, debug=False, ssl=None):
         """Start the web server. This function does not normally return, as
@@ -1329,7 +1329,7 @@ class Microdot:
 
             app.run(debug=True)
         """
-        uasyncio.run(self.start_server(host=host, port=port, debug=debug,
+        asyncio.run(self.start_server(host=host, port=port, debug=debug,
                                        ssl=ssl))  # pragma: no cover
 
     def shutdown(self):

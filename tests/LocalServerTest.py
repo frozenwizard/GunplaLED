@@ -1,7 +1,7 @@
 
 import json
 
-import uasyncio
+import asyncio
 
 from src.gunpla.generic_gundam import GenericGundam
 from src.hardware.VirtualHardware import VirtualHardware
@@ -55,7 +55,7 @@ def main():
     }
 
     webserver = WebServer(test_settings, VirtualHardware())
-    uasyncio.run(webserver.run())
+    asyncio.run(webserver.run())
 
 
 if __name__ == "__main__":

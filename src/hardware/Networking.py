@@ -1,4 +1,4 @@
-import uasyncio
+import asyncio
 
 
 class Networking:
@@ -38,7 +38,7 @@ class Networking:
                 print(f"Connected to {ssid}")
                 return wlan.ifconfig()[0]
             # Wait to retry
-            await uasyncio.sleep(1)
+            await asyncio.sleep(1)
 
         print("WiFi failed")
         raise Exception("WiFi connection failed")
