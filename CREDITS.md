@@ -45,5 +45,5 @@ SOFTWARE.
 
 ---
 
-*Note: While individual components remain under their respective licenses, 
+*Note: While individual components remain under their respective licenses,
 the combined work as a whole is distributed under the terms of the GPLv3.*
