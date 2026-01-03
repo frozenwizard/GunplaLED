@@ -1,6 +1,6 @@
 # Project Credits and Licensing Notices
 
-This project is primarily licensed under the **GNU General Public License v3.0 (GPLv3)**. 
+This project is primarily licensed under the **GNU General Public License v3.0 (GPLv3)**.
 It incorporates third-party open-source software as detailed below.
 
 ---
@@ -14,6 +14,7 @@ This project uses the **Microdot** web framework for its server implementation.
 - **License:** MIT License
 
 ### MIT License (Microdot)
+
 Copyright (c) 2019 Miguel Grinberg
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -44,4 +45,5 @@ SOFTWARE.
 
 ---
 
-*Note: While individual components remain under their respective licenses, the combined work as a whole is distributed under the terms of the GPLv3.*
+*Note: While individual components remain under their respective licenses, 
+the combined work as a whole is distributed under the terms of the GPLv3.*

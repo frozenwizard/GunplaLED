@@ -48,17 +48,23 @@ deploy:  ## Deploys the built artifacts to the pi board
 	rshell rm -r /pyboard/*
 	rshell cp -r target/* /pyboard/
 
-#python tooling
+.PHONY: format-other
+format-other:  ## Formats anything else
+	markdownlint -c .markdownlint.yaml --fix **/*.md
+
 .PHONY: format
-format:  ## Format the Python code
+format: format-python format-other ## Formats everything
+
+#python tooling
+.PHONY: format-python
+format-python:  ## Format the Python code
 	autopep8 -i -r src/ tests/
 	isort .
 
 .PHONY: lint
 lint: ## Lints the python code and documents
-	markdownlint --fix **/*.md
+	markdownlint -c .markdownlint.yaml **/*.md
 	pylint src/  --ignore Microdot.py
-
 
 help:  ## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
