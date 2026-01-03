@@ -1,7 +1,8 @@
 import time
 
-from machine import PWM
+import uasyncio
 
+import src.hardware
 from src.pi import LED
 
 
@@ -11,44 +12,44 @@ class LEDEffects:
     """
 
     @staticmethod
-    def blink(led: LED) -> None:
+    async def blink(led: LED) -> None:
         """
         Blinks the onboard LED twice
         """
         led.on()
         time.sleep(0.5)
         led.off()
-        time.sleep(0.5)
+        await uasyncio.sleep(0.5)
         led.on()
-        time.sleep(0.5)
+        await uasyncio.sleep(0.5)
         led.off()
 
     @staticmethod
-    def fire(led: LED) -> None:
+    async def fire(led: LED) -> None:
         """
         A simple weapon effect of firing a beam rifle, has no charging effect
         :param led:
         :return:
         """
         led.on()
-        time.sleep(.5)
+        await uasyncio.sleep(.5)
         led.off()
 
     @staticmethod
-    def charge_fire(led: LED, charge_speed: int = 1) -> None:
+    async def charge_fire(led: LED, charge_speed: int = 1) -> None:
         """
         A simple charging of a shot
         """
-        LEDEffects.brighten(led, start_percent=0, end_percent=75, speed=charge_speed)
+        await LEDEffects.brighten(led, start_percent=0, end_percent=75, speed=charge_speed)
         led.off()
-        time.sleep(0.5)
+        await uasyncio.sleep(0.5)
         # LEDEffects.brighten(led, start_percent=75, end_percent=100, speed=1)
         led.on()
-        time.sleep(2)
+        await uasyncio.sleep(2)
         led.off()
 
     @staticmethod
-    def brighten(led: LED, start_percent: int = 0, end_percent: int = 100, speed: int = 10) -> None:
+    async def brighten(led: LED, start_percent: int = 0, end_percent: int = 100, speed: int = 10) -> None:
         """
         Starting from start_pct goes to end_pct over the course of speed, brightens led
         :param led:
@@ -57,8 +58,7 @@ class LEDEffects:
         :param speed:
         :return:
         """
-
-        pwm = PWM(led.pin)
+        pwm = src.hardware.get_hardware().get_pwm(led.pin)
         pwm.freq(1000)
         step_rate = 10
 
@@ -70,18 +70,19 @@ class LEDEffects:
         for percent in range(start_percent, end_percent, step_rate):
             duty = int((percent / 100) * 65_535)
             pwm.duty_u16(duty)
-            time.sleep(sleep_time)
+            await uasyncio.sleep(sleep_time)
         pwm.deinit()
 
     @staticmethod
-    def brighten_all(leds: list[LED], start_percent: int = 0, end_percent: int = 100, speed: int = 10) -> None:
+    async def brighten_all(leds: list[LED], start_percent: int = 0, end_percent: int = 100, speed: int = 10) -> None:
         """
         The current banshee amount of leds passed in causes it to I guess stack overflow and silently crash
-        around 30%  so this method should not be used until that's addressed.
+        around 30%  so this method should not be used until that's addressed.  I also don't think i understand all there
+        is to PWM.
         """
         pwms = []
         for led in leds:
-            pwm = PWM(led.pin)
+            pwm = src.hardware.get_hardware().get_pwm(led.pin)
             pwm.freq(1000)
             pwms.append(pwm)
 
@@ -96,7 +97,7 @@ class LEDEffects:
             duty = int((percent / 100) * 65_535)
             for pwm in pwms:
                 pwm.duty_u16(duty)
-            time.sleep(sleep_time)
+            await uasyncio.sleep(sleep_time)
 
         for pwm in pwms:
             pwm.deinit()

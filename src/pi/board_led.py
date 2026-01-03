@@ -1,5 +1,3 @@
-from machine import Pin
-
 from src.pi.LED import LED
 
 
@@ -9,5 +7,7 @@ class BoardLED(LED):
     """
 
     def __init__(self):  # pylint  # pylint: disable=(super-init-not-called
-        self.pin: Pin = Pin("LED", Pin.OUT)
-        self.led_name = "Board LED"
+        from machine import Pin
+
+        self._pin: Pin = Pin("LED", Pin.OUT)
+        self._led_name = "Board LED"

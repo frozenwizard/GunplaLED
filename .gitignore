@@ -7,7 +7,7 @@
 micropython/
 target/
 src/settings.py
-src/phew
+__pycache__
 temp/
 #OS garbage
 .DS_STORE

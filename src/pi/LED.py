@@ -1,4 +1,3 @@
-from machine import Pin
 
 
 class LED:
@@ -7,35 +6,37 @@ class LED:
     """
 
     def __init__(self, pin_number: int, name: str):
-        self.pin: Pin = Pin(pin_number, Pin.OUT)
-        self.led_name = name
+        from machine import Pin
+
+        self._pin: Pin = Pin(pin_number, Pin.OUT)
+        self._led_name = name
 
     def enabled(self) -> bool:
-        '''
-        Returns false as the LED is not connected
-        '''
+        """
+        Returns true as the LED is connected
+        """
         return True
 
     def on(self) -> None:
         """
         Turns on the LED light
         """
-        self.pin.on()
+        self._pin.on()
 
     def off(self):
         """
         Turns off the LED light
         """
-        self.pin.off()
+        self._pin.off()
 
     def name(self) -> str:
         """
         :return: The name of LED
         """
-        return self.led_name
+        return self._led_name
 
-    def pin(self) -> Pin:
+    def pin(self):
         """
         :return: The underlying Raspberry Pi Pico Pin of the LED.
         """
-        return self.pin
+        return self._pin
