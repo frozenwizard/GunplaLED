@@ -1,7 +1,7 @@
 {
   "$schema": "../../gundam_led_config.schema.json",
 
-  "name": "dummy plug",
+  "name": "virgo",
   "leds": [
     {"name":  "head", "pin": 0, "color":  "green", "disabled":  true},
     {"name":  "head_camera", "pin": 1, "color":  "green", "disabled":  true},
