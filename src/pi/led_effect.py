@@ -1,8 +1,7 @@
-import asyncio
+import uasyncio
 import time
 
-from machine import PWM
-
+import src.hardware
 from src.pi import LED
 
 
@@ -19,9 +18,9 @@ class LEDEffects:
         led.on()
         time.sleep(0.5)
         led.off()
-        await asyncio.sleep(0.5)
+        await uasyncio.sleep(0.5)
         led.on()
-        await asyncio.sleep(0.5)
+        await uasyncio.sleep(0.5)
         led.off()
 
     @staticmethod
@@ -32,7 +31,7 @@ class LEDEffects:
         :return:
         """
         led.on()
-        await asyncio.sleep(.5)
+        await uasyncio.sleep(.5)
         led.off()
 
     @staticmethod
@@ -42,10 +41,10 @@ class LEDEffects:
         """
         await LEDEffects.brighten(led, start_percent=0, end_percent=75, speed=charge_speed)
         led.off()
-        await asyncio.sleep(0.5)
+        await uasyncio.sleep(0.5)
         # LEDEffects.brighten(led, start_percent=75, end_percent=100, speed=1)
         led.on()
-        await asyncio.sleep(2)
+        await uasyncio.sleep(2)
         led.off()
 
     @staticmethod
@@ -58,8 +57,7 @@ class LEDEffects:
         :param speed:
         :return:
         """
-
-        pwm = PWM(led.pin)
+        pwm = src.hardware.get_hardware().get_pwm(led.pin)
         pwm.freq(1000)
         step_rate = 10
 
@@ -71,7 +69,7 @@ class LEDEffects:
         for percent in range(start_percent, end_percent, step_rate):
             duty = int((percent / 100) * 65_535)
             pwm.duty_u16(duty)
-            await asyncio.sleep(sleep_time)
+            await uasyncio.sleep(sleep_time)
         pwm.deinit()
 
     @staticmethod
@@ -83,7 +81,7 @@ class LEDEffects:
         """
         pwms = []
         for led in leds:
-            pwm = PWM(led.pin)
+            pwm = src.hardware.get_hardware().get_pwm(led.pin)
             pwm.freq(1000)
             pwms.append(pwm)
 
@@ -98,7 +96,7 @@ class LEDEffects:
             duty = int((percent / 100) * 65_535)
             for pwm in pwms:
                 pwm.duty_u16(duty)
-            await asyncio.sleep(sleep_time)
+            await uasyncio.sleep(sleep_time)
 
         for pwm in pwms:
             pwm.deinit()

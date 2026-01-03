@@ -1,6 +1,5 @@
 import json
 
-from src.pi.board_led import BoardLED
 from src.pi.disabled_LED import DisabledLED
 from src.pi.LED import LED
 from src.server.Wrappers import safe_execution
@@ -10,7 +9,6 @@ class BaseGundam:
     """
     Base Gunpla.
     """
-    board_led = BoardLED()
 
     def __init__(self):
         with open(self.get_config_file()) as config_contents:

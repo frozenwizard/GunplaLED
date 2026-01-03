@@ -1,29 +1,23 @@
-import asyncio
-import logging
+import uasyncio
 import sys
 
-import network
-from Microdot import Microdot, send_file
-from Microdot import Request
-
-from src import settings
 from src.gunpla.generic_gundam import GenericGundam
-from src.pi.board_led import BoardLED
-from src.pi.LED import LED
+from src.hardware.Hardware import Hardware
 from src.pi.led_effect import LEDEffects
+from src.server.Microdot import Microdot, Request, send_file
 from src.server.Wrappers import create_show_handler, safe_execution
-from src.server.Networking import connect_to_wifi
+
 
 class WebServer:
     """
     Webserver that manages API routes and web pages for the Gunpla
     """
 
-    def __init__(self, configuration: dict):
+    def __init__(self, configuration: dict, hardware: Hardware):
         self.app = Microdot()
         self.settings: dict = configuration
-        self.gundam: GenericGundam = settings.webserver['model']
-        self.board_led: LED = BoardLED()
+        self.gundam: GenericGundam = configuration['model']
+        self.hardware: Hardware = hardware
 
     @safe_execution
     async def index(self, request: Request):
@@ -38,25 +32,24 @@ class WebServer:
         """
         Sanity check to make sure webserver is running.
         """
-        asyncio.create_task(LEDEffects.blink(self.board_led))
+        uasyncio.create_task(LEDEffects.blink(self.hardware.board_led))
         return "chirp", 202
 
     async def _connect_to_wifi(self):
-        ipaddress: str = connect_to_wifi(self.settings['ssid'], self.settings['password'])
+        ipaddress: str = await self.hardware.networking.connect_to_wifi(self.settings['ssid'], self.settings['password'])
         if ipaddress:
             print(f"Server started on {ipaddress}")
-            await LEDEffects.blink(self.board_led)
+            await LEDEffects.blink(self.hardware.board_led)
         else:
-            logging.error("Server failed to connect")
+            print("Server failed to connect")
             sys.exit("Cannot start server")
 
     async def run(self):
         """
         Main runner of the webserver.  Loads configurations, paths, connects to wifi and runs the server
         """
-        network.hostname(self.settings['hostname'])
-        print(f"Set hostname to {network.hostname()}")
 
+        self.hardware.networking.configure_host(self.settings['hostname'])
         await self._connect_to_wifi()
 
         self._add_routes()
@@ -88,9 +81,10 @@ class WebServer:
             path = f"/lightshow/{lightshow['path']}"
             method_func = getattr(self.gundam, lightshow['method'])
 
-            self.app.route(path)(create_show_handler(method_func))
+            self.app.route(path)(create_show_handler(method_func, self.gundam))
 
         # 404 Handler
         @self.app.errorhandler(404)
         def not_found(request):
+            # TODO: list all routes
             return "Not found", 404

@@ -1,4 +1,3 @@
-from machine import Pin
 
 
 class LED:
@@ -7,6 +6,8 @@ class LED:
     """
 
     def __init__(self, pin_number: int, name: str):
+        from machine import Pin
+
         self._pin: Pin = Pin(pin_number, Pin.OUT)
         self._led_name = name
 
@@ -34,7 +35,7 @@ class LED:
         """
         return self._led_name
 
-    def pin(self) -> Pin:
+    def pin(self):
         """
         :return: The underlying Raspberry Pi Pico Pin of the LED.
         """

@@ -51,7 +51,7 @@ deploy:  ## Deploys the built artifacts to the pi board
 #python tooling
 .PHONY: format
 format:  ## Format the Python code
-	autopep8 -i -r src/
+	autopep8 -i -r src/ tests/
 	isort .
 
 .PHONY: lint

@@ -1,0 +1,24 @@
+{
+  "$schema": "gundam_led_config.schema.json",
+
+  "name": "dummy plug",
+  "leds": [
+    {"name":  "head", "pin": 0, "color":  "green", "disabled":  true},
+    {"name":  "head_camera", "pin": 1, "color":  "green", "disabled":  true},
+    {"name":  "chest", "pin": 2, "color":  "green", "disabled":  true},
+    {"name":  "beamsaber1", "pin":  3, "color":  "red", "disabled":  true},
+    {"name":  "beamsaber2", "pin":  4, "color":  "red", "disabled":  true},
+    {"name":  "weapon1", "pin":  5, "color":  "red", "disabled":  true},
+    {"name":  "weapon1_camera", "pin":  6, "color":  "green", "disabled":  true},
+    {"name":  "weapon2", "pin":  7, "color":  "red", "disabled":  true},
+    {"name":  "weapon2_camera", "pin":  8, "color":  "green", "disabled":  true},
+    {"name":  "vernier", "pin": 10, "color":  "blue", "disabled":  true}
+  ],
+  "lightshow": [
+    {
+      "name": "Activate Gundam",
+      "path": "activation",
+      "method": "activation"
+    }
+  ]
+}
