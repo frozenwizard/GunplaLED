@@ -12,17 +12,17 @@ class PicoHardware(Hardware):
         from machine import PWM, Pin
         self.Pin = Pin
         self.PWM = PWM
-        self.networking = Networking()
-        self.board_led = BoardLED()
+        self._networking = Networking()
+        self._board_led = BoardLED()
 
-    def networking(self):
+    def networking(self) -> Networking:
         """
         :return: networking
         """
-        return self.networking
+        return self._networking
 
-    def board_led(self):
-        return self.board_led
+    def board_led(self) -> BoardLED:
+        return self._board_led
 
     def get_pin(self, pin_num, mode="OUT"):
         # machine.Pin.OUT is an integer constant

@@ -1,4 +1,4 @@
-import uasyncio
+import asyncio
 
 
 def lightshow_route(gunpla, manager_attr="current_task"):
@@ -15,11 +15,11 @@ def lightshow_route(gunpla, manager_attr="current_task"):
                 try:
                     gunpla.all_off()
                     await existing_task  # Wait for cleanup
-                except uasyncio.CancelledError:
+                except asyncio.CancelledError:
                     pass
 
             # Start the new show and track it
-            task = uasyncio.create_task(func())
+            task = asyncio.create_task(func())
             setattr(gunpla, manager_attr, task)
 
             # Return common HTTP response that the show started.

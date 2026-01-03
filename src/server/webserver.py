@@ -1,6 +1,5 @@
+import asyncio
 import sys
-
-import uasyncio
 
 from src.gunpla.generic_gundam import GenericGundam
 from src.hardware.Hardware import Hardware
@@ -33,14 +32,14 @@ class WebServer:
         """
         Sanity check to make sure webserver is running.
         """
-        uasyncio.create_task(LEDEffects.blink(self.hardware.board_led))
+        asyncio.create_task(LEDEffects.blink(self.hardware.board_led))
         return "chirp", 202
 
     async def _connect_to_wifi(self):
-        ipaddress: str = await self.hardware.networking.connect_to_wifi(self.settings['ssid'], self.settings['password'])
+        ipaddress: str = await self.hardware.networking().connect_to_wifi(self.settings['ssid'], self.settings['password'])
         if ipaddress:
             print(f"Server started on {ipaddress}")
-            await LEDEffects.blink(self.hardware.board_led)
+            await LEDEffects.blink(self.hardware.board_led())
         else:
             print("Server failed to connect")
             sys.exit("Cannot start server")
@@ -50,7 +49,7 @@ class WebServer:
         Main runner of the webserver.  Loads configurations, paths, connects to wifi and runs the server
         """
 
-        self.hardware.networking.configure_host(self.settings['hostname'])
+        self.hardware.networking().configure_host(self.settings['hostname'])
         await self._connect_to_wifi()
 
         self._add_routes()

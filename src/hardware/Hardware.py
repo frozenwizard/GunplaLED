@@ -17,7 +17,6 @@ class Hardware:
     def reset_pin(self, pin_num):
         raise NotImplementedError
 
-    @property
     def networking(self) -> Networking:
         raise NotImplementedError
 
