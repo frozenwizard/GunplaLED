@@ -1,10 +1,11 @@
-import uasyncio
 import sys
+
+import uasyncio
 
 from src.gunpla.generic_gundam import GenericGundam
 from src.hardware.Hardware import Hardware
 from src.pi.led_effect import LEDEffects
-from src.server.Microdot import Microdot, Request, send_file
+from src.server.microdot.Microdot import Microdot, Request, send_file
 from src.server.Wrappers import create_show_handler, safe_execution
 
 
@@ -63,6 +64,7 @@ class WebServer:
         self.app.route("/")(self.index)
         self.app.route("/index")(self.index)
         self.app.route("/canary")(self.canary)
+        # TODO add a /stop route to stop all lightshows
 
         @self.app.route("/led/<led_name>/on")
         @safe_execution
@@ -77,6 +79,7 @@ class WebServer:
         self.app.route("/all/on")(self.gundam.all_on)
         self.app.route("/all/off")(self.gundam.all_off)
 
+        # dynamically add all lightshow paths
         for lightshow in self.gundam.config['lightshow']:
             path = f"/lightshow/{lightshow['path']}"
             method_func = getattr(self.gundam, lightshow['method'])

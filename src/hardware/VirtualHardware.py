@@ -55,6 +55,10 @@ class VirtualHardware(Hardware):
             pass
 
     class MockBoardLED(BoardLED):
+        """
+        Fake implementation of the onboard led.
+        """
+
         def __init__(self):
             self._pin = src.hardware.VirtualHardware.MockPin(1)
             self.led_name = "Mock Board LED"

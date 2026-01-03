@@ -7,11 +7,8 @@ def lightshow_route(gunpla, manager_attr="current_task"):
     standardized HTTP responses.
     """
     def decorator(func):
-        print("decorating route")
-
         async def wrapper(request, *args, **kwargs):
-            print("wrapping route")
-            # 1. Kill any existing show to prevent flickering/overlap
+            # If any existing lightshow is running, cancel it and turn off all the LEDs.
             existing_task = getattr(gunpla, manager_attr, None)
             if existing_task and not existing_task.done():
                 existing_task.cancel()
@@ -21,17 +18,14 @@ def lightshow_route(gunpla, manager_attr="current_task"):
                 except uasyncio.CancelledError:
                     pass
 
-            # 2. Start the new show and track it
+            # Start the new show and track it
             task = uasyncio.create_task(func())
             setattr(gunpla, manager_attr, task)
 
-            # 3. Standardized Response
+            # Return common HTTP response that the show started.
             return {
                 "status": "started",
                 "show": func.__name__,
-                # "message": "Gundam sequence initiated"
             }, 202
-        print("wappred route")
         return wrapper
-    print("lighted route")
     return decorator

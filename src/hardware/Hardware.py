@@ -4,6 +4,10 @@ from src.pi.board_led import BoardLED
 
 
 class Hardware:
+    """
+    Hardware abstraction layer.
+    """
+
     def get_pin(self, pin_num, mode):
         raise NotImplementedError
 
@@ -13,6 +17,7 @@ class Hardware:
     def reset_pin(self, pin_num):
         raise NotImplementedError
 
+    @property
     def networking(self) -> Networking:
         raise NotImplementedError
 

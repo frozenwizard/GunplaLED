@@ -1,5 +1,6 @@
-import uasyncio
 import time
+
+import uasyncio
 
 import src.hardware
 from src.pi import LED

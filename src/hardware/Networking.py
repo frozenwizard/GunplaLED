@@ -5,7 +5,12 @@ class Networking:
     def __init__(self):
         pass
 
-    def configure_host(self, host_name: str):
+    def configure_host(self, host_name: str) -> None:
+        """
+        Configures the hostname of the Pi.
+        :param host_name:
+        :return:
+        """
         import network
 
         network.hostname(host_name)
@@ -15,11 +20,10 @@ class Networking:
         """
         Method to connect the pico to wifi.
 
-
         :param ssid:
         :param password:
         :param attempts: Number of attempts to connect before halting
-        :return:
+        :return: ip or raises exception
         """
         import network
 
@@ -33,7 +37,7 @@ class Networking:
             if wlan.isconnected():
                 print(f"Connected to {ssid}")
                 return wlan.ifconfig()[0]
-            #Wait to retry
+            # Wait to retry
             await uasyncio.sleep(1)
 
         print("WiFi failed")

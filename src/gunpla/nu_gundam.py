@@ -1,5 +1,6 @@
-import uasyncio
 import random
+
+import uasyncio
 
 from src.gunpla.base_gundam import BaseGundam
 from src.pi.led_effect import LEDEffects

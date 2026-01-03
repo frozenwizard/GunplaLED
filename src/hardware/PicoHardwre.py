@@ -4,6 +4,10 @@ from src.pi.board_led import BoardLED
 
 
 class PicoHardware(Hardware):
+    """
+    Abstraction to access the Raspberry Pi Pico hardware.
+    """
+
     def __init__(self):
         from machine import PWM, Pin
         self.Pin = Pin
@@ -12,6 +16,9 @@ class PicoHardware(Hardware):
         self.board_led = BoardLED()
 
     def networking(self):
+        """
+        :return: networking
+        """
         return self.networking
 
     def board_led(self):
