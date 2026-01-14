@@ -16,13 +16,13 @@ class MobileDoll(GenericGundam):
     Mobile Doll
     """
 
-    def __init__(self, model_config: json):
-        self.config = model_config
+    def __init__(self, hardware, model_config: json = None):
+        self.hardware = hardware
+        self.config = model_config if model_config else {}
 
     def get_config_file(self) -> str:
         return "tests/config/virgo.json"
 
-    # TODO: refactor light show url creation to be a decorator and also not need the request.
     async def activation(self):
         print("Mobile Doll activation")
         return
@@ -50,7 +50,7 @@ def main():
         "ssid": "wifi",
         "password": 'wifi-pass',
         "hostname": 'virgo',
-        "model": MobileDoll(model_config)
+        "model": lambda hardware: MobileDoll(hardware, model_config)
     }
 
     webserver = WebServer(test_settings, VirtualHardware())

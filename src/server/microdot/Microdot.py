@@ -491,7 +491,7 @@ class Request:
             if self.content_type is None:
                 return None
             mime_type = self.content_type.split(';')[0]
-            if mime_type != 'application/x-www-form-urlencoded':
+            if mime_type != 'application/x-templates-form-urlencoded':
                 return None
             self._form = self._parse_urlencoded(self.body)
         return self._form

@@ -10,7 +10,9 @@ class BaseGundam:
     Base Gunpla.
     """
 
-    def __init__(self):
+    def __init__(self, hardware):
+        from src.hardware.Hardware import Hardware
+        self.hardware: Hardware = hardware
         with open(self.get_config_file()) as config_contents:
             self.config: json = json.loads(config_contents.read())
 
@@ -37,9 +39,6 @@ class BaseGundam:
         led = self._get_led_from_name(led_name)
         led.off()
 
-    # TODO: make this not need the safe_execution and do it when we register paths
-
-    @safe_execution
     def all_on(self) -> None:
         """
         Turns all configured LED's on.
@@ -62,8 +61,6 @@ class BaseGundam:
                 leds += f"{led_name}: on\n"
         return leds
 
-    # TODO: make this not need the safe_execution and do it when we register paths
-    @safe_execution
     def all_off(self) -> None:
         """
         Turns all configured LED's off
@@ -110,7 +107,7 @@ class BaseGundam:
         if 'disabled' in entry and entry['disabled']:
             print(f"{led_name} is disabled")
             return DisabledLED(led_name)
-        return LED(entry['pin'], led_name)
+        return self.hardware.create_led(entry['pin'], led_name)
 
     def __get_entry_from_name(self, led_name: str) -> json:
         """

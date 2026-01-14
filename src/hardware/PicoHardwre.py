@@ -35,3 +35,9 @@ class PicoHardware(Hardware):
     def reset_pin(self, pin_num):
         """Re-initializes the pin to clear PWM settings"""
         return self.get_pin(pin_num, mode="OUT")
+
+    def create_led(self, pin_number: int, name: str):
+        """Creates a real LED with actual GPIO pin"""
+        from src.pi.LED import LED
+        pin = self.get_pin(pin_number, mode="OUT")
+        return LED(pin, name)

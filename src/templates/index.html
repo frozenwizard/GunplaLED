@@ -1,0 +1,45 @@
+{% args derp, all_leds, lightshows %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ derp }}</title>
+</head>
+<body>
+
+<h3>Control individual LEDs</h3>
+<ul>
+    {% for led in all_leds %}
+    <li>
+        <strong>{{ led['name'] }}</strong>
+        <form action="./led/{{ led['name'] }}/on" style="display:inline;">
+            <input type="submit" value="ON">
+        </form>
+        <form action="./led/{{ led['name'] }}/off" style="display:inline;">
+            <input type="submit" value="OFF">
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+
+<h3>Light Shows</h3>
+<ul>
+    {% for show in lightshows %}
+    <li>
+        <form action="./lightshow/{{ show['path'] }}">
+            <input type="submit" value="Start {{ show['name'] }}">
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+
+<br>
+<h3>Global Controls</h3>
+<form action="./all/on">
+    <input type="submit" value="Turn on All LEDs">
+</form>
+<form action="./all/off">
+    <input type="submit" value="Turn off All LEDs">
+</form>
+
+</body>
+</html>

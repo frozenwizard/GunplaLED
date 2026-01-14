@@ -22,3 +22,12 @@ class Hardware:
 
     def board_led(self) -> BoardLED:
         raise NotImplementedError
+
+    def create_led(self, pin_number: int, name: str):
+        """
+        Creates an LED instance appropriate for this hardware.
+        :param pin_number: GPIO pin number
+        :param name: LED name
+        :return: LED instance (LED or MockLED)
+        """
+        raise NotImplementedError

@@ -10,7 +10,10 @@ def safe_execution(func):
     async def wrapper(*args, **kwargs):
         try:
             print(f"Trying to execute {func.__name__}")
-            await func(*args, **kwargs)
+            result = await func(*args, **kwargs)
+            # If the function returns a value, use it; otherwise return success JSON
+            if result is not None:
+                return result
             return {"status": "success", "action": func.__name__}, 202
         except Exception as e:
             # Log the error to console
