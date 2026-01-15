@@ -31,7 +31,7 @@ class WebServer:
         show_list = self.gundam.config['lightshow']
 
         return await Template('index.html').render_async(
-            derp="Gundam LED Control",
+            name_of_title="Gundam LED Control",
             all_leds=led_list,
             lightshows=show_list
         ), 200, {'Content-Type': 'text/html'}
@@ -104,6 +104,22 @@ class WebServer:
 
         # 404 Handler
         @self.app.errorhandler(404)
-        def not_found(request):
-            # TODO: list all routes
-            return "Not found", 404
+        async def not_found(request):
+            # Microdot stores routes in the url_map which is a tuple
+            urls: list[str] = []
+            for route in self.app.url_map:
+                # route is a tuple: (method, path_re, handler)
+                path = route[1].url_pattern  # The regex pattern of the URL
+
+                if "<led_name>" in path:
+                    x = [led.name() for led in self.gundam.get_all_leds() if led.enabled() ]
+                    for led_name in x:
+                        complete_path = path.replace("<led_name>", led_name)
+                        urls.append(complete_path)
+                else:
+                    urls.append(path)
+
+            return await Template('404.html').render_async(
+                name_of_title="404",
+                urls=urls,
+            ), 404, {'Content-Type': 'text/html'}

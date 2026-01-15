@@ -1,0 +1,23 @@
+{% args name_of_title, urls %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ name_of_title }}</title>
+</head>
+<body>
+
+<h2>Page not found 404</h2>
+
+<br>
+<br>
+<h3>List of available pages</h3>
+<ul>
+    {% for url in urls %}
+    <li>
+        <strong>{{ url }}</strong>
+    </li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>

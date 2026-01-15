@@ -35,7 +35,7 @@ def main():
 
         "name": "Virgo",
         "leds": [
-            {"name":  "head", "pin": 0, "color":  "green", "disabled":  True},
+            {"name":  "head", "pin": 0, "color":  "green", "disabled":  False},
         ],
         "lightshow": [
             {
