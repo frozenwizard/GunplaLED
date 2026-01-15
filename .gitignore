@@ -7,6 +7,9 @@
 micropython/
 target/
 src/settings.py
+#cached templated file
+src/templates/*.py
+
 __pycache__
 temp/
 #OS garbage

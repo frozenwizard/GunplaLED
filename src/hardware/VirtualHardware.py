@@ -81,3 +81,9 @@ class VirtualHardware(Hardware):
 
     def reset_pin(self, pin_num):
         print(f"[SIM] Pin {pin_num} reset to standard GPIO")
+
+    def create_led(self, pin_number: int, name: str):
+        """Creates a mock LED for simulation"""
+        from src.pi.LED import MockLED
+        pin = self.get_pin(pin_number, mode="OUT")
+        return MockLED(pin, name)

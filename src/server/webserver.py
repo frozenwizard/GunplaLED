@@ -4,7 +4,8 @@ import sys
 from src.gunpla.generic_gundam import GenericGundam
 from src.hardware.Hardware import Hardware
 from src.pi.led_effect import LEDEffects
-from src.server.microdot.Microdot import Microdot, Request, send_file
+from src.server.microdot.Microdot import Microdot, Request
+from src.server.microdot.utemplate import Template
 from src.server.Wrappers import create_show_handler, safe_execution
 
 
@@ -16,24 +17,40 @@ class WebServer:
     def __init__(self, configuration: dict, hardware: Hardware):
         self.app = Microdot()
         self.settings: dict = configuration
-        self.gundam: GenericGundam = configuration['model']
+        # Instantiate the model class with hardware
+        self.gundam: GenericGundam = configuration['model'](hardware)
         self.hardware: Hardware = hardware
+        Template.initialize(template_dir='src/templates')
 
     @safe_execution
     async def index(self, request: Request):
         """
         Returns the root index page
         """
-        # Todo fix this rendering
-        return await send_file("src/www/index.html")
+        led_list = [{"name": led.name()} for led in self.gundam.get_all_leds()]
+        show_list = self.gundam.config['lightshow']
+
+        return await Template('index.html').render_async(
+            name_of_title="Gundam LED Control",
+            all_leds=led_list,
+            lightshows=show_list
+        ), 200, {'Content-Type': 'text/html'}
 
     @safe_execution
     async def canary(self, request: Request):
         """
         Sanity check to make sure webserver is running.
         """
-        asyncio.create_task(LEDEffects.blink(self.hardware.board_led))
+        asyncio.create_task(LEDEffects.blink(self.hardware.board_led()))
         return "chirp", 202
+
+    def all_on(self, request: Request):
+        self.gundam.all_on()
+        return "All leds are on", 202
+
+    def all_off(self, request: Request):
+        self.gundam.all_off()
+        return "All leds are off", 202
 
     async def _connect_to_wifi(self):
         ipaddress: str = await self.hardware.networking().connect_to_wifi(self.settings['ssid'], self.settings['password'])
@@ -75,8 +92,8 @@ class WebServer:
         async def led_off_handler(request, led_name):
             return self.gundam.led_off(led_name)
 
-        self.app.route("/all/on")(self.gundam.all_on)
-        self.app.route("/all/off")(self.gundam.all_off)
+        self.app.route("/all/on")(self.all_on)
+        self.app.route("/all/off")(self.all_off)
 
         # dynamically add all lightshow paths
         for lightshow in self.gundam.config['lightshow']:
@@ -87,6 +104,22 @@ class WebServer:
 
         # 404 Handler
         @self.app.errorhandler(404)
-        def not_found(request):
-            # TODO: list all routes
-            return "Not found", 404
+        async def not_found(request):
+            # Microdot stores routes in the url_map which is a tuple
+            urls: list[str] = []
+            for route in self.app.url_map:
+                # route is a tuple: (method, path_re, handler)
+                path = route[1].url_pattern  # The regex pattern of the URL
+
+                if "<led_name>" in path:
+                    x = [led.name() for led in self.gundam.get_all_leds() if led.enabled() ]
+                    for led_name in x:
+                        complete_path = path.replace("<led_name>", led_name)
+                        urls.append(complete_path)
+                else:
+                    urls.append(path)
+
+            return await Template('404.html').render_async(
+                name_of_title="404",
+                urls=urls,
+            ), 404, {'Content-Type': 'text/html'}
