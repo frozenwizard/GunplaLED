@@ -64,7 +64,7 @@ format-python:  ## Format the Python code
 .PHONY: lint
 lint: ## Lints the python code and documents
 	markdownlint -c .markdownlint.yaml **/*.md
-	pylint src/  --ignore Microdot.py
+	pylint src/  --ignore-paths src/server/microdot,src/server/utemplate
 
 help:  ## Show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'

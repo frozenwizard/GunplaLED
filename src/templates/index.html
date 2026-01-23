@@ -1,4 +1,4 @@
-{% args name_of_title, all_leds, lightshows %}
+{% args name_of_title, all_leds, lightshows, running_show %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,6 +22,11 @@
 </ul>
 
 <h3>Light Shows</h3>
+{% if running_show %}
+<p>A lightshow is currently running.</p>
+{% else %}
+<p>No lightshow is running.</p>
+{% endif %}
 <ul>
     {% for show in lightshows %}
     <li>
@@ -30,6 +35,11 @@
         </form>
     </li>
     {% endfor %}
+    <li>
+        <form action="./lightshow/stop">
+            <input type="submit" value="Halt any running lightshow">
+        </form>
+    </li>
 </ul>
 
 <br>
