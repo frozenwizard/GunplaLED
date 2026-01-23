@@ -27,6 +27,15 @@ class MobileDoll(GenericGundam):
         print("Mobile Doll activation")
         return
 
+    async def infinite(self):
+        try:
+            while True:
+                await asyncio.sleep(1)
+                print("Hi")
+        except asyncio.CancelledError:
+            print("Infinite loop cancelled")
+            raise
+
 
 def main():
 
@@ -42,6 +51,11 @@ def main():
                 "name": "Activate Virgo",
                 "path": "activation",
                 "method": "activation"
+            },
+            {
+                "name": "Infinitelooop test",
+                "path": "infinite",
+                "method": "infinite"
             }
         ]
     }
