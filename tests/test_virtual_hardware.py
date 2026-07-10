@@ -8,7 +8,7 @@ from src.hardware import get_hardware
 from src.hardware.VirtualHardware import VirtualHardware
 from src.pi.disabled_LED import DisabledLED
 from src.pi.led_effect import LEDEffects
-from src.server.RouteDecorator import cancel_lightshow, lightshow_route
+from src.server.RouteDecorator import LightshowManager, lightshow_route
 
 
 def test_get_hardware_selects_virtual_off_device():
@@ -60,12 +60,13 @@ def test_all_on_and_off_run_on_virtual_hardware():
     gundam.all_off()
 
 
-def test_lightshow_lifecycle_tracks_and_clears_task():
-    class Gunpla:
-        def all_off(self):
-            pass
+class FakeGunpla:
+    def all_off(self):
+        pass
 
-    gunpla = Gunpla()
+
+def test_lightshow_lifecycle_tracks_and_clears_task():
+    manager = LightshowManager(FakeGunpla())
 
     async def scenario():
         started = asyncio.Event()
@@ -74,14 +75,44 @@ def test_lightshow_lifecycle_tracks_and_clears_task():
             started.set()
             await asyncio.sleep(60)
 
-        handler = lightshow_route(gunpla)(show)
+        handler = lightshow_route(manager)(show)
         _, status = await handler(None)
         assert status == 202
         await started.wait()
-        assert not gunpla.current_task.done()
+        assert manager.is_running()
 
-        assert await cancel_lightshow(gunpla) is True
-        assert gunpla.current_task is None
-        assert await cancel_lightshow(gunpla) is False
+        assert await manager.stop() is True
+        assert not manager.is_running()
+        assert await manager.stop() is False
+
+    asyncio.run(scenario())
+
+
+def test_overlapping_start_requests_do_not_orphan_a_show():
+    manager = LightshowManager(FakeGunpla())
+    running = []
+
+    def make_show(name):
+        async def show():
+            running.append(name)
+            try:
+                await asyncio.sleep(60)
+            finally:
+                running.remove(name)
+        return show
+
+    async def scenario():
+        await manager.start(make_show("first"))
+        await asyncio.sleep(0)
+        # Two replacement requests land while the first show is still being
+        # cancelled — without serialization one of these orphaned a show.
+        await asyncio.gather(manager.start(make_show("second")), manager.start(make_show("third")))
+        await asyncio.sleep(0)
+        assert running == ["third"]
+        assert manager.is_running()
+
+        await manager.stop()
+        assert running == []
+        assert not manager.is_running()
 
     asyncio.run(scenario())

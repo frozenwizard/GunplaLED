@@ -1,6 +1,6 @@
 import asyncio
 
-from src.pi import LED
+from src.pi.LED import LED
 
 
 class LEDEffects:
@@ -50,23 +50,7 @@ class LEDEffects:
         await asyncio.sleep(2)
         led.off()
 
-    @staticmethod
-    def _step_timing(start_percent: int, end_percent: int, speed: int):
-        """
-        Computes the step rate and per-step sleep time for a brighten effect.
-        :return: (step_rate, sleep_time), or None if the range is degenerate (nothing to animate)
-        """
-        step_rate = 10
-        overall_change = end_percent - start_percent
-        if overall_change <= 0:
-            return None
-        interval = overall_change / step_rate
-        sleep_time = speed / interval
-        # print(f"overall[{overall_change}] interval[{interval}] sleep[{sleep_time}]")
-        return step_rate, sleep_time
-
-    @staticmethod
-    async def brighten(led: LED, start_percent: int = 0, end_percent: int = 100, speed: int = 10) -> None:
+    async def brighten(self, led: LED, start_percent: int = 0, end_percent: int = 100, speed: int = 10) -> None:
         """
         Starting from start_pct goes to end_pct over the course of speed, brightens led
         :param led:
@@ -75,52 +59,47 @@ class LEDEffects:
         :param speed:
         :return:
         """
-        timing = LEDEffects._step_timing(start_percent, end_percent, speed)
-        if not led.enabled() or timing is None:
-            return
-        step_rate, sleep_time = timing
-        # todo: use interval as the loop counter and just increment percent until end_percent
-        pwm = src.hardware.get_hardware().get_pwm(led.pin())
-        pwm.freq(1000)
-        try:
-            for percent in range(start_percent, end_percent, step_rate):
-                duty = int((percent / 100) * 65_535)
-                pwm.duty_u16(duty)
-                await asyncio.sleep(sleep_time)
-        finally:
-            pwm.deinit()
-            led.set_pin(src.hardware.get_hardware().reset_pin(led.pin()))
+        await self.brighten_all([led], start_percent, end_percent, speed)
 
-    @staticmethod
-    async def brighten_all(leds: list[LED], start_percent: int = 0, end_percent: int = 100, speed: int = 10) -> None:
+    async def brighten_all(self, leds: list[LED], start_percent: int = 0, end_percent: int = 100, speed: int = 10) -> None:
         """
-        The current banshee amount of leds passed in causes it to I guess stack overflow and silently crash
-        around 30%  so this method should not be used until that's addressed.  I also don't think i understand all there
-        is to PWM.
+        Brightens all the given LEDs together from start_percent to end_percent over speed.
+        Note: on real hardware, driving the full banshee LED count at once has silently crashed
+        around 30% in the past — PWM here is not fully understood yet.
         """
-        timing = LEDEffects._step_timing(start_percent, end_percent, speed)
-        if timing is None:
+        step_rate = 10
+
+        overall_change = end_percent - start_percent
+        if overall_change <= 0:
             return
-        step_rate, sleep_time = timing
+        interval = overall_change / step_rate
+        sleep_time = speed / interval
+
+        enabled_leds = [led for led in leds if led.enabled()]
+        if not enabled_leds:
+            return
 
         pwms = []
-        active_leds = []
-        for led in leds:
-            if not led.enabled():
-                continue
-            pwm = src.hardware.get_hardware().get_pwm(led.pin())
-            pwm.freq(1000)
-            pwms.append(pwm)
-            active_leds.append(led)
-
         try:
+            for led in enabled_leds:
+                pwm = self.hardware.get_pwm(led.pin())
+                pwm.freq(1000)
+                pwms.append(pwm)
+
             for percent in range(start_percent, end_percent, step_rate):
                 duty = int((percent / 100) * 65_535)
                 for pwm in pwms:
                     pwm.duty_u16(duty)
                 await asyncio.sleep(sleep_time)
+
+            # range() stops short of end_percent, so land on the final brightness explicitly
+            duty = int((end_percent / 100) * 65_535)
+            for pwm in pwms:
+                pwm.duty_u16(duty)
         finally:
+            # Runs even when a show is cancelled mid-ramp: release the PWM and re-mux the
+            # pin back to plain GPIO, otherwise the LED's cached Pin stops responding.
             for pwm in pwms:
                 pwm.deinit()
-            for led in active_leds:
-                led.set_pin(src.hardware.get_hardware().reset_pin(led.pin()))
+            for led in enabled_leds:
+                self.hardware.reset_pin(led.pin())

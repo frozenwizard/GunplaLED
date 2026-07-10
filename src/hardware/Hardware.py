@@ -14,11 +14,11 @@ class Hardware:
     def get_pwm(self, pin_obj):
         raise NotImplementedError
 
-    def reset_pin(self, pin_obj):
+    def reset_pin(self, pin):
         """
         Reinitializes a pin previously used for PWM back to plain digital output.
-        :param pin_obj: The Pin object to reinitialize
-        :return: The same Pin object, ready for plain digital I/O
+        :param pin: The Pin object to reinitialize
+        :return: A Pin object ready for plain digital I/O on the same GPIO
         """
         raise NotImplementedError
 

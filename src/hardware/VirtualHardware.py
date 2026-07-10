@@ -92,9 +92,9 @@ class VirtualHardware(Hardware):
     def networking(self) -> Networking:
         return self._networking
 
-    def reset_pin(self, pin_obj):
-        print(f"[SIM] Pin {pin_obj.num} reset to standard GPIO")
-        return pin_obj
+    def reset_pin(self, pin):
+        print(f"[SIM] Pin {pin.num} reset to standard GPIO")
+        return pin
 
     def create_led(self, pin_number: int, name: str):
         """Creates a mock LED for simulation"""

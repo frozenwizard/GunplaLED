@@ -26,6 +26,3 @@ class DisabledLED(LED):
 
     def off(self):
         pass
-
-    def set_pin(self, pin) -> None:
-        pass
