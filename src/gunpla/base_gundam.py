@@ -2,7 +2,6 @@ import json
 
 from src.pi.disabled_LED import DisabledLED
 from src.pi.LED import LED
-from src.server.Wrappers import safe_execution
 
 
 class BaseGundam:
@@ -13,6 +12,7 @@ class BaseGundam:
     def __init__(self, hardware):
         from src.hardware.Hardware import Hardware
         self.hardware: Hardware = hardware
+        self._leds = {}
         with open(self.get_config_file()) as config_contents:
             self.config: json = json.loads(config_contents.read())
 
@@ -44,44 +44,16 @@ class BaseGundam:
         Turns all configured LED's on.
         """
         print("turning on all leds")
-        self._all_leds_on()
-
-    def _all_leds_on(self) -> str:
-        """
-        Turns all LEDs on
-        """
-        leds: str = ""
-        for led_entry in self.config['leds']:
-            led_name = led_entry['name']
-            led = self._get_led_from_name(led_name)
+        for led in self.get_all_leds():
             led.on()
-            if isinstance(led, DisabledLED):
-                leds += f"{led_name}: disabled\n"
-            else:
-                leds += f"{led_name}: on\n"
-        return leds
 
     def all_off(self) -> None:
         """
         Turns all configured LED's off
         """
         print("turning off all leds")
-        self._all_leds_off()
-
-    def _all_leds_off(self) -> str:
-        """"
-        Turns all LEDs off
-        """
-        leds: str = ""
-        for led_entry in self.config['leds']:
-            led_name = led_entry['name']
-            led = self._get_led_from_name(led_name)
+        for led in self.get_all_leds():
             led.off()
-            if isinstance(led, DisabledLED):
-                leds += f"{led_name}: disabled\n"
-            else:
-                leds += f"{led_name}: off\n"
-        return leds
 
     def get_all_leds(self, ignore_list: list[str] = []) -> list[LED]:
         """
@@ -98,16 +70,21 @@ class BaseGundam:
 
     def _get_led_from_name(self, led_name: str) -> LED:
         """
-        Given a name of an LED, returns the LED object for it.
+        Given a name of an LED, returns the LED object for it, creating and caching it on first use.
         Throws an exception if it's not found
         :param led_name:
         :return:
         """
-        entry = self.__get_entry_from_name(led_name)
-        if 'disabled' in entry and entry['disabled']:
-            print(f"{led_name} is disabled")
-            return DisabledLED(led_name)
-        return self.hardware.create_led(entry['pin'], led_name)
+        led = self._leds.get(led_name)
+        if led is None:
+            entry = self.__get_entry_from_name(led_name)
+            if 'disabled' in entry and entry['disabled']:
+                print(f"{led_name} is disabled")
+                led = DisabledLED(led_name)
+            else:
+                led = self.hardware.create_led(entry['pin'], led_name)
+            self._leds[led_name] = led
+        return led
 
     def __get_entry_from_name(self, led_name: str) -> json:
         """

@@ -20,7 +20,7 @@ webserver = {
     "ssid": "My house wifi",
     "password": 'password',
     "hostname": 'nu-gundam.local',
-    "model": NuGundam()
+    "model": NuGundam
 }
 ```
 
