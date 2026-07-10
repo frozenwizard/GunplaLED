@@ -10,6 +10,15 @@ from src.server.RouteDecorator import cancel_lightshow, is_lightshow_running
 from src.server.Wrappers import create_show_handler, safe_execution
 
 
+def run_server(settings: dict, hardware: Hardware) -> None:
+    """
+    Composes and runs the webserver.  The single entry point shared by the
+    on-device runner (main.py) and the local test server (tests/LocalServerTest.py).
+    """
+    webserver = WebServer(settings, hardware)
+    asyncio.run(webserver.run())
+
+
 class WebServer:
     """
     Webserver that manages API routes and web pages for the Gunpla
@@ -87,7 +96,10 @@ class WebServer:
 
         self._add_routes()
 
-        await self.app.start_server(host='0.0.0.0', port=80, debug=True)
+        await self.app.start_server(
+            host=self.settings.get('host', '0.0.0.0'),
+            port=self.settings.get('port', 80),
+            debug=self.settings.get('debug', True))
 
     def _is_lightshow_running(self):
         """

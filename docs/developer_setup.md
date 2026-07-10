@@ -50,16 +50,21 @@ entering the ```repl``` and importing the required classes.
 Light shows and other effects can be activated such as the following.
 
 ```python
+import asyncio
+from src.hardware import get_hardware
 from src.gunpla.nu_gundam import NuGundam
-g = NuGundam()
-g.activation(None)
+g = NuGundam(get_hardware())
+asyncio.run(g.activation())
 ```
 
 Individual effects can be used as such on a individual LED directly
 
 ```python
-from src.pi.LED import LED
+import asyncio
+from src.hardware import get_hardware
 from src.pi.led_effect import LEDEffects
-led = LED(0, "0")
-LEDEffects.fire(led)
+hardware = get_hardware()
+led = hardware.create_led(0, "head")
+asyncio.run(LEDEffects.fire(led))
+asyncio.run(LEDEffects(hardware).brighten(led))
 ```

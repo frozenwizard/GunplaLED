@@ -1,7 +1,6 @@
 import asyncio
 
 from src.gunpla.base_gundam import BaseGundam
-from src.pi.led_effect import LEDEffects
 
 
 class UnicornBansheeGundam(BaseGundam):
@@ -19,6 +18,6 @@ class UnicornBansheeGundam(BaseGundam):
         """
         Runs the glow lightshow
         """
-        await LEDEffects.brighten_all(self.get_all_leds())
+        await self.effects.brighten_all(self.get_all_leds())
         await asyncio.sleep(3)
         self.all_off()

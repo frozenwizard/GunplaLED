@@ -6,8 +6,12 @@ class BoardLED(LED):
     Special Representation of the onboard Pico LED
     """
 
-    def __init__(self):  # pylint  # pylint: disable=(super-init-not-called
-        from machine import Pin
-
-        self._pin: Pin = Pin("LED", Pin.OUT)
-        self._led_name = "Board LED"
+    def __init__(self, pin=None):
+        """
+        :param pin: The pin driving the onboard LED.  Defaults to the real Pico pin;
+                    virtual hardware injects a mock instead.
+        """
+        if pin is None:
+            from machine import Pin
+            pin = Pin("LED", Pin.OUT)
+        super().__init__(pin, "Board LED")

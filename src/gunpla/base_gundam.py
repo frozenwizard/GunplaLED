@@ -3,6 +3,7 @@ import json
 
 from src.pi.disabled_LED import DisabledLED
 from src.pi.LED import LED
+from src.pi.led_effect import LEDEffects
 
 
 class BaseGundam:
@@ -17,6 +18,7 @@ class BaseGundam:
         """
         from src.hardware.Hardware import Hardware
         self.hardware: Hardware = hardware
+        self.effects = LEDEffects(hardware)
         self._leds = {}
         self.lightshow_lock = asyncio.Lock()
         if config is not None:

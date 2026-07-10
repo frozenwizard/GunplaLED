@@ -1,13 +1,18 @@
 import asyncio
 
-import src.hardware
 from src.pi import LED
 
 
 class LEDEffects:
     """
     A collection of effects a LED can do.  Things such as pulsate, breath, flash, etc.
+    PWM-based effects drive the pins through the hardware supplied at construction,
+    so the same effects run against real or virtual hardware.
     """
+
+    def __init__(self, hardware):
+        from src.hardware.Hardware import Hardware
+        self.hardware: Hardware = hardware
 
     @staticmethod
     async def blink(led: LED) -> None:
@@ -33,15 +38,14 @@ class LEDEffects:
         await asyncio.sleep(.5)
         led.off()
 
-    @staticmethod
-    async def charge_fire(led: LED, charge_speed: int = 1) -> None:
+    async def charge_fire(self, led: LED, charge_speed: int = 1) -> None:
         """
         A simple charging of a shot
         """
-        await LEDEffects.brighten(led, start_percent=0, end_percent=75, speed=charge_speed)
+        await self.brighten(led, start_percent=0, end_percent=75, speed=charge_speed)
         led.off()
         await asyncio.sleep(0.5)
-        # LEDEffects.brighten(led, start_percent=75, end_percent=100, speed=1)
+        # self.brighten(led, start_percent=75, end_percent=100, speed=1)
         led.on()
         await asyncio.sleep(2)
         led.off()

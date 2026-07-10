@@ -33,6 +33,6 @@ class Hardware:
         Creates an LED instance appropriate for this hardware.
         :param pin_number: GPIO pin number
         :param name: LED name
-        :return: LED instance (LED or MockLED)
+        :return: LED instance appropriate for this hardware
         """
         raise NotImplementedError

@@ -4,7 +4,7 @@ import json
 
 from src.gunpla.generic_gundam import GenericGundam
 from src.hardware.VirtualHardware import VirtualHardware
-from src.server.webserver import WebServer
+from src.server.webserver import run_server
 
 """
 Sanity check class to run the webserver in local mode when a Raspberry pi is not needed.
@@ -63,11 +63,11 @@ def main():
         "ssid": "wifi",
         "password": 'wifi-pass',
         "hostname": 'virgo',
-        "model": lambda hardware: MobileDoll(hardware, model_config)
+        "model": lambda hardware: MobileDoll(hardware, model_config),
+        "port": 8080  # unprivileged, so no root needed on the laptop
     }
 
-    webserver = WebServer(test_settings, VirtualHardware())
-    asyncio.run(webserver.run())
+    run_server(test_settings, VirtualHardware())
 
 
 if __name__ == "__main__":

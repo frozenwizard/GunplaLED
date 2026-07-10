@@ -42,26 +42,3 @@ class LED:
         :return: The underlying Raspberry Pi Pico Pin of the LED.
         """
         return self._pin
-
-    def set_pin(self, pin) -> None:
-        """
-        Replaces the underlying pin, e.g. after LEDEffects reinitializes it post-PWM use.
-        """
-        self._pin = pin
-
-
-class MockLED(LED):
-    """
-    LED implementation for simulation that prints actions to console.
-    Used when running with VirtualHardware for testing without physical hardware.
-    """
-
-    def on(self):
-        """Turns on the LED with simulation output"""
-        print(f"[SIM] LED '{self._led_name}' (Pin {self._pin.num}) ON")
-        self._pin.on()
-
-    def off(self):
-        """Turns off the LED with simulation output"""
-        print(f"[SIM] LED '{self._led_name}' (Pin {self._pin.num}) OFF")
-        self._pin.off()
