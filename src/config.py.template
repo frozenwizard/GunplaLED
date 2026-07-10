@@ -1,7 +1,8 @@
-from gunpla.GenericGundam import GenericGundam
+from src.gunpla.generic_gundam import GenericGundam
+
 webserver = {
     "ssid": '<replace with your WLAN SSID>',
     "password": '<replace with your WLAN password>',
-    "hostname": 'gunpla.local' #replace with a desired hostname,
-    "model": GenericGundam() #The gunpla you have
+    "hostname": 'gunpla.local',  # replace with a desired hostname
+    "model": GenericGundam  # The gunpla you have (class reference, not an instance)
 }

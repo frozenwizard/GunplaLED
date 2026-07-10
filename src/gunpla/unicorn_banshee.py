@@ -21,4 +21,4 @@ class UnicornBansheeGundam(BaseGundam):
         """
         await LEDEffects.brighten_all(self.get_all_leds())
         await asyncio.sleep(3)
-        self._all_leds_off()
+        self.all_off()

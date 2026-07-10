@@ -17,8 +17,9 @@ class MobileDoll(GenericGundam):
     """
 
     def __init__(self, hardware, model_config: json = None):
-        self.hardware = hardware
-        self.config = model_config if model_config else {}
+        super().__init__(hardware)
+        if model_config:
+            self.config = model_config
 
     def get_config_file(self) -> str:
         return "tests/config/virgo.json"

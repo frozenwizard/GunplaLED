@@ -61,7 +61,7 @@ class VirtualHardware(Hardware):
 
         def __init__(self):
             self._pin = src.hardware.VirtualHardware.MockPin(1)
-            self.led_name = "Mock Board LED"
+            self._led_name = "Mock Board LED"
 
     def __init__(self):
         self.pin = self.MockPin

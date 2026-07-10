@@ -1,5 +1,4 @@
 import asyncio
-import time
 
 import src.hardware
 from src.pi import LED
@@ -16,7 +15,7 @@ class LEDEffects:
         Blinks the onboard LED twice
         """
         led.on()
-        time.sleep(0.5)
+        await asyncio.sleep(0.5)
         led.off()
         await asyncio.sleep(0.5)
         led.on()
@@ -57,15 +56,19 @@ class LEDEffects:
         :param speed:
         :return:
         """
-        pwm = src.hardware.get_hardware().get_pwm(led.pin)
-        pwm.freq(1000)
+        if not led.enabled():
+            return
         step_rate = 10
 
         overall_change = end_percent - start_percent
+        if overall_change <= 0:
+            return
         interval = overall_change / step_rate
         sleep_time = speed / interval
         # print(f"overall[{overall_change}] interval[{interval}] sleep[{sleep_time}]")
         # todo: use interval as the loop counter and just increment percent until end_percent
+        pwm = src.hardware.get_hardware().get_pwm(led.pin())
+        pwm.freq(1000)
         for percent in range(start_percent, end_percent, step_rate):
             duty = int((percent / 100) * 65_535)
             pwm.duty_u16(duty)
@@ -79,20 +82,23 @@ class LEDEffects:
         around 30%  so this method should not be used until that's addressed.  I also don't think i understand all there
         is to PWM.
         """
-        pwms = []
-        for led in leds:
-            pwm = src.hardware.get_hardware().get_pwm(led.pin)
-            pwm.freq(1000)
-            pwms.append(pwm)
-
         step_rate = 10
 
         overall_change = end_percent - start_percent
+        if overall_change <= 0:
+            return
         interval = overall_change / step_rate
         sleep_time = speed / interval
 
+        pwms = []
+        for led in leds:
+            if not led.enabled():
+                continue
+            pwm = src.hardware.get_hardware().get_pwm(led.pin())
+            pwm.freq(1000)
+            pwms.append(pwm)
+
         for percent in range(start_percent, end_percent, step_rate):
-            print(percent)
             duty = int((percent / 100) * 65_535)
             for pwm in pwms:
                 pwm.duty_u16(duty)
