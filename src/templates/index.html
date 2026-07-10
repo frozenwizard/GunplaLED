@@ -1,4 +1,4 @@
-{% args name_of_title, all_leds, lightshows, running_show %}
+{% args name_of_title, all_leds, lightshows, status_message %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,11 +22,7 @@
 </ul>
 
 <h3>Light Shows</h3>
-{% if running_show %}
-<p>A lightshow is currently running.</p>
-{% else %}
-<p>No lightshow is running.</p>
-{% endif %}
+<p>{{ status_message }}</p>
 <ul>
     {% for show in lightshows %}
     <li>

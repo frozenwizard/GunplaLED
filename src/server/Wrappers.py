@@ -1,6 +1,3 @@
-from src.server.RouteDecorator import lightshow_route
-
-
 def safe_execution(func):
     """
     Wraps an async route handler with a try/except block.
@@ -23,18 +20,19 @@ def safe_execution(func):
     return wrapper
 
 
-def create_show_handler(func, show_manager):
+def create_show_handler(name, func, show_manager):
     """
-    Helper that when given a function, wraps it as a lighthow_route and safe_execution.
+    Builds a route handler that starts func as the named lightshow through the
+    show manager.  Errors inside the running show itself are recorded by the
+    manager's supervisor, not here — safe_execution only guards the request.
+    :param name: the lightshow name from the model config, shown in the UI
+    :param func: the async lightshow method on the gunpla
     :param show_manager: the LightshowManager that owns the running show
-    if needed we can add back in the request obj to show_handler and func(request)
-    :param func:
     :return:
     """
-    # note order matters for these
-    @lightshow_route(show_manager)
     @safe_execution
-    async def show_handler():
-        return await func()
+    async def show_handler(request):
+        await show_manager.start(name, func)
+        return {"status": "started", "show": name}, 202
 
     return show_handler

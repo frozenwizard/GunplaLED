@@ -4,9 +4,9 @@ import sys
 from src.gunpla.generic_gundam import GenericGundam
 from src.hardware.Hardware import Hardware
 from src.pi.led_effect import LEDEffects
+from src.server.lightshow_manager import LightshowManager
 from src.server.microdot.Microdot import Microdot, Request
 from src.server.microdot.utemplate import Template
-from src.server.RouteDecorator import LightshowManager
 from src.server.Wrappers import create_show_handler, safe_execution
 
 
@@ -40,12 +40,11 @@ class WebServer:
         """
         led_list = [{"name": led.name()} for led in self.gundam.get_all_leds()]
         show_list = self.gundam.config['lightshow']
-        running_show = self._is_lightshow_running()
         return await Template('index.html').render_async(
             name_of_title="Gundam LED Control",
             all_leds=led_list,
             lightshows=show_list,
-            running_show=running_show
+            status_message=self.show_manager.describe()
         ), 200, {'Content-Type': 'text/html'}
 
     @safe_execution
@@ -56,22 +55,22 @@ class WebServer:
         asyncio.create_task(LEDEffects.blink(self.hardware.board_led()))
         return "chirp", 202
 
-    def all_on(self, request: Request):
+    async def all_on(self, request: Request):
         """
-          Turns on all LEDs.
+          Turns on all LEDs, halting any running lightshow first.
           :param request:  Ignored.
           :return: HTTP 202 and message
           """
-        self.gundam.all_on()
+        await self.show_manager.run_action("All LEDs on", self.gundam.all_on)
         return "All leds are on", 202
 
-    def all_off(self, request: Request):
+    async def all_off(self, request: Request):
         """
-        Turns off all LEDs.
+        Turns off all LEDs, halting any running lightshow first.
         :param request:  Ignored.
         :return: HTTP 202 and message
         """
-        self.gundam.all_off()
+        await self.show_manager.run_action("All LEDs off", self.gundam.all_off)
         return "All leds are off", 202
 
     async def _connect_to_wifi(self):
@@ -102,12 +101,6 @@ class WebServer:
             port=self.settings.get('port', 80),
             debug=self.settings.get('debug', True))
 
-    def _is_lightshow_running(self):
-        """
-        :return: True if lightshow is running, False otherwise
-        """
-        return self.show_manager.is_running()
-
     def _add_routes(self):
         """
            Given a server adds all endpoints for Leds and lightshows
@@ -119,12 +112,12 @@ class WebServer:
         @self.app.route("/led/<led_name>/on")
         @safe_execution
         async def led_on_handler(request, led_name):
-            return self.gundam.led_on(led_name)
+            await self.show_manager.run_action(f"LED '{led_name}' on", lambda: self.gundam.led_on(led_name))
 
         @self.app.route("/led/<led_name>/off")
         @safe_execution
         async def led_off_handler(request, led_name):
-            return self.gundam.led_off(led_name)
+            await self.show_manager.run_action(f"LED '{led_name}' off", lambda: self.gundam.led_off(led_name))
 
         self.app.route("/all/on")(self.all_on)
         self.app.route("/all/off")(self.all_off)
@@ -134,20 +127,31 @@ class WebServer:
             path = f"/lightshow/{lightshow['path']}"
             method_func = getattr(self.gundam, lightshow['method'])
 
-            self.app.route(path)(create_show_handler(method_func, self.show_manager))
+            self.app.route(path)(create_show_handler(lightshow['name'], method_func, self.show_manager))
 
         @self.app.route("/lightshow/stop")
         @safe_execution
         async def stop_lightshow(request):
             """
             Stops any currently running lightshow task on the gundam instance.
+            Stop always leaves all the LEDs off, running show or not.
             """
-            stopped = await self.show_manager.stop()
-            self.gundam.all_off()
+            stopped_show = await self.show_manager.stop()
+            if stopped_show:
+                return {"status": "stopped", "message": f"Lightshow '{stopped_show}' terminated"}, 200
 
-            if stopped:
-                return {"status": "stopped", "message": "Lightshow terminated"}, 200
+            await self.show_manager.run_action("All LEDs off", self.gundam.all_off)
             return {"status": "idle", "message": "No active lightshow to stop"}, 200
+
+        @self.app.route("/lightshow/status")
+        @safe_execution
+        async def lightshow_status(request):
+            """
+            Reports the current lightshow status as JSON.
+            """
+            status = self.show_manager.status()
+            status["message"] = self.show_manager.describe()
+            return status, 200
 
         # 404 Handler
         @self.app.errorhandler(404)
