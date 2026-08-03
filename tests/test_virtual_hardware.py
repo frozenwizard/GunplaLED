@@ -8,7 +8,8 @@ from src.hardware import get_hardware
 from src.hardware.VirtualHardware import VirtualHardware
 from src.pi.disabled_LED import DisabledLED
 from src.pi.led_effect import LEDEffects
-from src.server.RouteDecorator import LightshowManager, lightshow_route
+from src.server.lightshow_manager import LightshowManager
+from src.server.Wrappers import create_show_handler
 
 
 def test_get_hardware_selects_virtual_off_device():
@@ -54,6 +55,12 @@ def test_gundam_caches_led_objects():
     assert gundam._get_led_from_name("head") is gundam._get_led_from_name("head")
 
 
+def test_has_led_reports_configured_leds():
+    gundam = GenericGundam(VirtualHardware())
+    assert gundam.has_led("head")
+    assert not gundam.has_led("nonexistent")
+
+
 def test_all_on_and_off_run_on_virtual_hardware():
     gundam = GenericGundam(VirtualHardware())
     gundam.all_on()
@@ -61,29 +68,151 @@ def test_all_on_and_off_run_on_virtual_hardware():
 
 
 class FakeGunpla:
+    def __init__(self):
+        self.all_off_calls = 0
+
     def all_off(self):
-        pass
+        self.all_off_calls += 1
 
 
-def test_lightshow_lifecycle_tracks_and_clears_task():
+def test_lightshow_lifecycle_tracks_status():
     manager = LightshowManager(FakeGunpla())
 
     async def scenario():
+        assert manager.status()["state"] == "idle"
         started = asyncio.Event()
 
         async def show():
             started.set()
             await asyncio.sleep(60)
 
-        handler = lightshow_route(manager)(show)
-        _, status = await handler(None)
+        handler = create_show_handler("Marathon", show, manager)
+        body, status = await handler(None)
         assert status == 202
+        assert body["show"] == "Marathon"
         await started.wait()
         assert manager.is_running()
+        assert manager.status() == {"state": "running", "show": "Marathon", "error": None}
 
-        assert await manager.stop() is True
+        assert await manager.stop() == "Marathon"
         assert not manager.is_running()
-        assert await manager.stop() is False
+        assert manager.status()["state"] == "stopped"
+        assert await manager.stop() is None
+
+    asyncio.run(scenario())
+
+
+def test_show_outcomes_are_recorded():
+    manager = LightshowManager(FakeGunpla())
+
+    async def scenario():
+        async def quick():
+            pass
+
+        await manager.start("Quick", quick)
+        while manager.is_running():
+            await asyncio.sleep(0)
+        assert manager.status() == {"state": "completed", "show": "Quick", "error": None}
+
+        async def bad():
+            raise RuntimeError("boom")
+
+        await manager.start("Bad", bad)
+        while manager.is_running():
+            await asyncio.sleep(0)
+        assert manager.status() == {"state": "errored", "show": "Bad", "error": "boom"}
+
+    asyncio.run(scenario())
+
+
+def test_manual_action_cancels_show_and_records_finished():
+    gunpla = FakeGunpla()
+    manager = LightshowManager(gunpla)
+    actions = []
+
+    async def scenario():
+        async def show():
+            await asyncio.sleep(60)
+
+        await manager.start("Marathon", show)
+        await asyncio.sleep(0)
+        await manager.run_action("All LEDs on", lambda: actions.append("all_on"))
+        assert actions == ["all_on"]
+        assert not manager.is_running()
+        assert manager.status() == {"state": "finished", "show": "All LEDs on", "error": None}
+        assert gunpla.all_off_calls == 1  # the cancelled show's LEDs were cleared first
+
+    asyncio.run(scenario())
+
+
+def test_stop_turns_leds_off_even_when_nothing_was_running():
+    gunpla = FakeGunpla()
+    manager = LightshowManager(gunpla)
+
+    async def scenario():
+        assert await manager.stop() is None
+        assert gunpla.all_off_calls == 1
+
+    asyncio.run(scenario())
+
+
+def test_run_action_records_error_status_and_reraises_instead_of_leaving_it_stale():
+    gunpla = FakeGunpla()
+    manager = LightshowManager(gunpla)
+
+    async def scenario():
+        async def show():
+            await asyncio.sleep(60)
+
+        await manager.start("Marathon", show)
+        await asyncio.sleep(0)
+
+        def bad_action():
+            raise ValueError("nope")
+
+        try:
+            await manager.run_action("Bad action", bad_action)
+            assert False, "expected ValueError to propagate"
+        except ValueError:
+            pass
+
+        # The show was still cancelled (run_action always clears the way first),
+        # but status now reflects the failed action instead of being left at
+        # whatever the cancelled show's supervisor last recorded.
+        assert not manager.is_running()
+        assert manager.status() == {"state": "errored", "show": "Bad action", "error": "nope"}
+        assert gunpla.all_off_calls == 1
+
+    asyncio.run(scenario())
+
+
+def test_is_running_stays_consistent_with_status_during_cancellation():
+    manager = LightshowManager(FakeGunpla())
+    observed = []
+
+    async def scenario():
+        async def slow_cleanup_show():
+            try:
+                await asyncio.sleep(60)
+            finally:
+                # cleanup needs an extra tick before the task is actually done
+                await asyncio.sleep(0)
+
+        await manager.start("Slow", slow_cleanup_show)
+        await asyncio.sleep(0)
+        assert manager.is_running()
+
+        async def watcher():
+            for _ in range(5):
+                observed.append((manager.is_running(), manager.status()["state"]))
+                await asyncio.sleep(0)
+
+        await asyncio.gather(manager.stop(), watcher())
+
+        for is_running, state in observed:
+            assert not (is_running is False and state == "running"), (
+                f"is_running() reported False while status still said running: {observed}"
+            )
 
     asyncio.run(scenario())
 
@@ -102,14 +231,16 @@ def test_overlapping_start_requests_do_not_orphan_a_show():
         return show
 
     async def scenario():
-        await manager.start(make_show("first"))
+        await manager.start("first", make_show("first"))
         await asyncio.sleep(0)
         # Two replacement requests land while the first show is still being
         # cancelled — without serialization one of these orphaned a show.
-        await asyncio.gather(manager.start(make_show("second")), manager.start(make_show("third")))
+        await asyncio.gather(manager.start("second", make_show("second")),
+                             manager.start("third", make_show("third")))
         await asyncio.sleep(0)
         assert running == ["third"]
         assert manager.is_running()
+        assert manager.status()["show"] == "third"
 
         await manager.stop()
         assert running == []
