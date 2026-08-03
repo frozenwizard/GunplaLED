@@ -68,22 +68,31 @@ class LightshowManager:
     async def stop(self):
         """
         Cancels any running lightshow, waits for it to clean up and turns the
-        LEDs off.
+        LEDs off — whether or not a show was actually running.
         :return: the name of the cancelled show, or None if nothing was running
         """
         async with self._lock:
-            return await self._cancel_current()
+            stopped_show = await self._cancel_current()
+            if stopped_show is None:
+                self.gunpla.all_off()
+            return stopped_show
 
     async def run_action(self, description: str, action) -> None:
         """
         Runs a one-shot LED action (e.g. "All LEDs on"), cancelling any running
-        show first so the show can't fight the user over the LEDs.
+        show first so the show can't fight the user over the LEDs.  If the
+        action itself fails, that's recorded as the current status instead of
+        leaving the (now-cancelled) show's stale status in place.
         :param description: what the action is, shown in the UI status
         :param action: a plain callable that manipulates the LEDs
         """
         async with self._lock:
             await self._cancel_current()
-            action()
+            try:
+                action()
+            except Exception as e:
+                self._set_status(ERRORED, description, str(e))
+                raise
             self._set_status(FINISHED, description)
 
     def _set_status(self, state: str, show: str, error: str = None) -> None:
@@ -107,11 +116,18 @@ class LightshowManager:
         """
         Cancels the tracked show if one is still running, waits for its cleanup
         and turns all LEDs off.  Callers must hold the lock.
+
+        self._task is kept set until the cancelled task is fully done, so
+        is_running() keeps reporting True for the outgoing show throughout its
+        cleanup instead of flipping to False before the supervisor has updated
+        status() to match — the two would otherwise disagree for however long
+        the show's own cleanup takes to unwind.
+
         :return: the name of the cancelled show, or None if nothing was running
         """
         task = self._task
-        self._task = None
         if task is None or task.done():
+            self._task = None
             return None
         name = self._show
         task.cancel()
@@ -119,5 +135,6 @@ class LightshowManager:
             await task  # Wait for cleanup; the supervisor records the outcome
         except asyncio.CancelledError:
             pass
+        self._task = None
         self.gunpla.all_off()
         return name

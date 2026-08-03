@@ -112,11 +112,17 @@ class WebServer:
         @self.app.route("/led/<led_name>/on")
         @safe_execution
         async def led_on_handler(request, led_name):
+            # Validate before run_action, which cancels any running show — an
+            # unknown led_name shouldn't destroy a show just to then 500.
+            if not self.gundam.has_led(led_name):
+                raise Exception(f"Entry '{led_name}' not found")
             await self.show_manager.run_action(f"LED '{led_name}' on", lambda: self.gundam.led_on(led_name))
 
         @self.app.route("/led/<led_name>/off")
         @safe_execution
         async def led_off_handler(request, led_name):
+            if not self.gundam.has_led(led_name):
+                raise Exception(f"Entry '{led_name}' not found")
             await self.show_manager.run_action(f"LED '{led_name}' off", lambda: self.gundam.led_off(led_name))
 
         self.app.route("/all/on")(self.all_on)
@@ -139,8 +145,6 @@ class WebServer:
             stopped_show = await self.show_manager.stop()
             if stopped_show:
                 return {"status": "stopped", "message": f"Lightshow '{stopped_show}' terminated"}, 200
-
-            await self.show_manager.run_action("All LEDs off", self.gundam.all_off)
             return {"status": "idle", "message": "No active lightshow to stop"}, 200
 
         @self.app.route("/lightshow/status")

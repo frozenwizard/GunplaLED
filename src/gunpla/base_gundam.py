@@ -64,6 +64,12 @@ class BaseGundam:
         for led in self.get_all_leds():
             led.off()
 
+    def has_led(self, led_name: str) -> bool:
+        """
+        :return: True if led_name is a configured LED, False otherwise
+        """
+        return any(entry['name'] == led_name for entry in self.config['leds'])
+
     def get_all_leds(self, ignore_list: list[str] = None) -> list[LED]:
         """
         Returns all LEDs configured, enabled or disabled.  But not the board_led
