@@ -32,10 +32,10 @@ class PicoHardware(Hardware):
     def get_pwm(self, pin_obj):
         return self.PWM(pin_obj)
 
-    def reset_pin(self, pin_obj):
-        """Re-initializes the pin in place to clear PWM settings"""
-        pin_obj.init(self.Pin.OUT)
-        return pin_obj
+    def reset_pin(self, pin):
+        """Re-initializes the pin to clear PWM settings.  machine.Pin accepts an
+        existing Pin object as the id, so cached LED pins are re-muxed in place."""
+        return self.Pin(pin, self.Pin.OUT)
 
     def create_led(self, pin_number: int, name: str):
         """Creates a real LED with actual GPIO pin"""

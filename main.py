@@ -1,15 +1,10 @@
-import asyncio
-
-import src
+import src.hardware
 from src import settings
-from src.hardware.Hardware import Hardware
-from src.server.webserver import WebServer
+from src.server.webserver import run_server
 
 
 def main():
-    hardware: Hardware = src.hardware.get_hardware()
-    webserver = WebServer(settings.webserver, hardware)
-    asyncio.run( webserver.run())
+    run_server(settings.webserver, src.hardware.get_hardware())
 
 
 if __name__ == "__main__":

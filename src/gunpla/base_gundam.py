@@ -1,8 +1,8 @@
-import asyncio
 import json
 
 from src.pi.disabled_LED import DisabledLED
 from src.pi.LED import LED
+from src.pi.led_effect import LEDEffects
 
 
 class BaseGundam:
@@ -17,8 +17,8 @@ class BaseGundam:
         """
         from src.hardware.Hardware import Hardware
         self.hardware: Hardware = hardware
+        self.effects = LEDEffects(hardware)
         self._leds = {}
-        self.lightshow_lock = asyncio.Lock()
         if config is not None:
             self.config: json = config
         else:
@@ -64,10 +64,11 @@ class BaseGundam:
         for led in self.get_all_leds():
             led.off()
 
-    def get_all_leds(self, ignore_list: list[str] = []) -> list[LED]:
+    def get_all_leds(self, ignore_list: list[str] = None) -> list[LED]:
         """
         Returns all LEDs configured, enabled or disabled.  But not the board_led
         """
+        ignore_list = ignore_list or []
         leds = []
         for led_entry in self.config['leds']:
             led_name = led_entry['name']

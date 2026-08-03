@@ -1,0 +1,25 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  pytest:
+    name: Run tests on virtual hardware
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+      - name: Install pytest
+        run: pip install pytest
+      - name: Run tests
+        run: python -m pytest tests/ -v

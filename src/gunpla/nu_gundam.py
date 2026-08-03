@@ -2,7 +2,6 @@ import asyncio
 import random
 
 from src.gunpla.base_gundam import BaseGundam
-from src.pi.led_effect import LEDEffects
 
 
 class NuGundam(BaseGundam):
@@ -26,7 +25,7 @@ class NuGundam(BaseGundam):
         await asyncio.sleep(0.1)
         head_led.off()
         await asyncio.sleep(0.5)
-        await LEDEffects.brighten(head_led)
+        await self.effects.brighten(head_led)
 
     async def fire_funnels(self) -> None:
         """
@@ -34,7 +33,7 @@ class NuGundam(BaseGundam):
         """
         for i in range(1, 7):
             funnel = self._get_led_from_name(f"fin_funnel_{i}")
-            await LEDEffects.fire(funnel)
+            await self.effects.fire(funnel)
 
     async def random_funnels(self) -> None:
         """
@@ -50,5 +49,5 @@ class NuGundam(BaseGundam):
 
         while True:
             funnel = random.choice(funnels)
-            await LEDEffects.charge_fire(funnel)
+            await self.effects.charge_fire(funnel)
             await asyncio.sleep(random.uniform(0, 3))

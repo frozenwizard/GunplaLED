@@ -6,8 +6,17 @@ from src.hardware.Hardware import Hardware
 from src.pi.led_effect import LEDEffects
 from src.server.microdot.Microdot import Microdot, Request
 from src.server.microdot.utemplate import Template
-from src.server.RouteDecorator import cancel_lightshow, is_lightshow_running
+from src.server.RouteDecorator import LightshowManager
 from src.server.Wrappers import create_show_handler, safe_execution
+
+
+def run_server(settings: dict, hardware: Hardware) -> None:
+    """
+    Composes and runs the webserver.  The single entry point shared by the
+    on-device runner (main.py) and the local test server (tests/LocalServerTest.py).
+    """
+    webserver = WebServer(settings, hardware)
+    asyncio.run(webserver.run())
 
 
 class WebServer:
@@ -21,6 +30,7 @@ class WebServer:
         # Instantiate the model class with hardware
         self.gundam: GenericGundam = configuration['model'](hardware)
         self.hardware: Hardware = hardware
+        self.show_manager = LightshowManager(self.gundam)
         Template.initialize(template_dir='src/templates')
 
     @safe_execution
@@ -87,13 +97,16 @@ class WebServer:
 
         self._add_routes()
 
-        await self.app.start_server(host='0.0.0.0', port=80, debug=True)
+        await self.app.start_server(
+            host=self.settings.get('host', '0.0.0.0'),
+            port=self.settings.get('port', 80),
+            debug=self.settings.get('debug', True))
 
     def _is_lightshow_running(self):
         """
         :return: True if lightshow is running, False otherwise
         """
-        return is_lightshow_running(self.gundam)
+        return self.show_manager.is_running()
 
     def _add_routes(self):
         """
@@ -121,7 +134,7 @@ class WebServer:
             path = f"/lightshow/{lightshow['path']}"
             method_func = getattr(self.gundam, lightshow['method'])
 
-            self.app.route(path)(create_show_handler(method_func, self.gundam))
+            self.app.route(path)(create_show_handler(method_func, self.show_manager))
 
         @self.app.route("/lightshow/stop")
         @safe_execution
@@ -129,9 +142,8 @@ class WebServer:
             """
             Stops any currently running lightshow task on the gundam instance.
             """
-            async with self.gundam.lightshow_lock:
-                stopped = await cancel_lightshow(self.gundam)
-                self.gundam.all_off()
+            stopped = await self.show_manager.stop()
+            self.gundam.all_off()
 
             if stopped:
                 return {"status": "stopped", "message": "Lightshow terminated"}, 200

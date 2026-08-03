@@ -23,16 +23,16 @@ def safe_execution(func):
     return wrapper
 
 
-def create_show_handler(func, gundam_instance):
+def create_show_handler(func, show_manager):
     """
     Helper that when given a function, wraps it as a lighthow_route and safe_execution.
-    :param gundam_instance:
+    :param show_manager: the LightshowManager that owns the running show
     if needed we can add back in the request obj to show_handler and func(request)
     :param func:
     :return:
     """
     # note order matters for these
-    @lightshow_route(gunpla=gundam_instance)
+    @lightshow_route(show_manager)
     @safe_execution
     async def show_handler():
         return await func()

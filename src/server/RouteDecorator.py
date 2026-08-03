@@ -1,49 +1,67 @@
 import asyncio
 
 
-def is_lightshow_running(gunpla, manager_attr="current_task") -> bool:
+class LightshowManager:
     """
-    :return: True if a lightshow task is currently tracked and hasn't finished yet
+    Owns the single running lightshow task for a gunpla.  start() and stop() are
+    serialized with a lock so overlapping requests can't orphan a running show
+    or leave two shows fighting over the same LEDs.
     """
-    existing_task = getattr(gunpla, manager_attr, None)
-    return existing_task is not None and not existing_task.done()
 
+    def __init__(self, gunpla):
+        self.gunpla = gunpla
+        self._task = None
+        self._lock = asyncio.Lock()
 
-async def cancel_lightshow(gunpla, manager_attr="current_task"):
-    """
-    Cancels any running lightshow task on the gunpla and clears the tracked task.
-    Callers must hold gunpla.lightshow_lock: this check-then-act sequence needs to stay
-    atomic with respect to other requests reading/writing the tracked task.
-    :return: True if a running show was cancelled, False if nothing was running
-    """
-    existing_task = getattr(gunpla, manager_attr, None)
-    if is_lightshow_running(gunpla, manager_attr):
-        existing_task.cancel()
+    def is_running(self) -> bool:
+        """
+        :return: True if a lightshow is currently running, False otherwise
+        """
+        return self._task is not None and not self._task.done()
+
+    async def start(self, func) -> None:
+        """
+        Cancels any running show (turning the LEDs off), then starts func as the
+        tracked lightshow task.
+        """
+        async with self._lock:
+            if await self._cancel_current():
+                self.gunpla.all_off()
+            self._task = asyncio.create_task(func())
+
+    async def stop(self) -> bool:
+        """
+        Cancels any running lightshow and waits for it to clean up.
+        :return: True if a running show was cancelled, False if nothing was running
+        """
+        async with self._lock:
+            return await self._cancel_current()
+
+    async def _cancel_current(self) -> bool:
+        task = self._task
+        self._task = None
+        if task is None or task.done():
+            return False
+        task.cancel()
         try:
-            await existing_task  # Wait for cleanup
+            await task  # Wait for cleanup
         except asyncio.CancelledError:
             pass
-        setattr(gunpla, manager_attr, None)
+        except Exception as e:
+            # A show that died on its own shouldn't fail the cancelling request
+            print(f"Lightshow ended with error: {e}")
         return True
-    setattr(gunpla, manager_attr, None)
-    return False
 
 
-def lightshow_route(gunpla, manager_attr="current_task"):
+def lightshow_route(manager: LightshowManager):
     """
     A decorator factory that handles task management and
     standardized HTTP responses.
     """
     def decorator(func):
         async def wrapper(request, *args, **kwargs):
-            async with gunpla.lightshow_lock:
-                # If any existing lightshow is running, cancel it and turn off all the LEDs.
-                if await cancel_lightshow(gunpla, manager_attr):
-                    gunpla.all_off()
-
-                # Start the new show and track it
-                task = asyncio.create_task(func())
-                setattr(gunpla, manager_attr, task)
+            # Replaces any running lightshow with this one.
+            await manager.start(func)
 
             # Return common HTTP response that the show started.
             return {

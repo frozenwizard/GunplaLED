@@ -4,13 +4,12 @@
 
 import time
 
-from machine import Pin
-
 
 def main():
     """
     Blinks the onboard Raspberry Pi Pico W LED several times.
     """
+    from machine import Pin
     led = Pin("LED", Pin.OUT)
     led.on()
     time.sleep(0.5)
