@@ -6,7 +6,7 @@ from src.hardware.Hardware import Hardware
 from src.pi.led_effect import LEDEffects
 from src.server.microdot.Microdot import Microdot, Request
 from src.server.microdot.utemplate import Template
-from src.server.RouteDecorator import cancel_lightshow
+from src.server.RouteDecorator import cancel_lightshow, is_lightshow_running
 from src.server.Wrappers import create_show_handler, safe_execution
 
 
@@ -93,8 +93,7 @@ class WebServer:
         """
         :return: True if lightshow is running, False otherwise
         """
-        existing_task = getattr(self.gundam, "current_task", None)
-        return existing_task is not None and not existing_task.done()
+        return is_lightshow_running(self.gundam)
 
     def _add_routes(self):
         """
@@ -130,8 +129,9 @@ class WebServer:
             """
             Stops any currently running lightshow task on the gundam instance.
             """
-            stopped = await cancel_lightshow(self.gundam)
-            self.gundam.all_off()
+            async with self.gundam.lightshow_lock:
+                stopped = await cancel_lightshow(self.gundam)
+                self.gundam.all_off()
 
             if stopped:
                 return {"status": "stopped", "message": "Lightshow terminated"}, 200

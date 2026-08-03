@@ -43,6 +43,12 @@ class LED:
         """
         return self._pin
 
+    def set_pin(self, pin) -> None:
+        """
+        Replaces the underlying pin, e.g. after LEDEffects reinitializes it post-PWM use.
+        """
+        self._pin = pin
+
 
 class MockLED(LED):
     """

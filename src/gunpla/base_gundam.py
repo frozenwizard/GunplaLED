@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 from src.pi.disabled_LED import DisabledLED
@@ -9,12 +10,20 @@ class BaseGundam:
     Base Gunpla.
     """
 
-    def __init__(self, hardware):
+    def __init__(self, hardware, config: dict = None):
+        """
+        :param hardware: The hardware abstraction to drive LEDs with.
+        :param config: An in-memory config to use instead of reading get_config_file() from disk.
+        """
         from src.hardware.Hardware import Hardware
         self.hardware: Hardware = hardware
         self._leds = {}
-        with open(self.get_config_file()) as config_contents:
-            self.config: json = json.loads(config_contents.read())
+        self.lightshow_lock = asyncio.Lock()
+        if config is not None:
+            self.config: json = config
+        else:
+            with open(self.get_config_file()) as config_contents:
+                self.config: json = json.loads(config_contents.read())
 
     def get_config_file(self) -> str:
         """
